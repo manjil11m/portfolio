@@ -1,0 +1,137 @@
+body{
+    font-family: "Roboto Flex", sans-serif;
+    font-optical-sizing: auto;
+    width: 100vw;
+    margin: 0;
+    padding: 0;
+}
+header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: black;
+    color: white;
+    padding: 5vw;
+    box-sizing: border-box;
+    margin: 0;
+    position: fixed;
+    top: 0vh;
+    width: 100vw;
+    left: 0;
+    z-index: 9999;
+}
+.header{
+    padding: 2vw;
+    box-sizing: border-box;
+    border: 1px solid white;
+    border-radius: 2vw;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.header:hover{
+    background-color: white;
+    color: black;
+
+}
+svg{
+    margin: 1vw;
+}
+#home{
+    height: 100vh;
+}
+a{
+    color: white;
+    text-decoration: none;
+}
+p{
+    margin: 0;
+    padding: 0;
+    font-weight: lighter;
+}
+#background{
+    position: fixed;
+    height: 100vw;
+}
+#projects{
+    padding-top: 10vh;
+    padding-bottom: 3vh;
+    box-sizing: border-box;
+    height: auto;
+
+      border-radius: 15px;
+      background: rgba(255, 255, 255, 0.2); /* semi-transparent */
+      backdrop-filter: blur(10px);          /* blur background behind */
+      -webkit-backdrop-filter: blur(10px);  /* Safari support */
+      border: 1px solid rgba(255, 255, 255, 0.3); /* subtle border */
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);  /* soft shadow */
+      color: black;
+      text-align: center;
+}
+h2{
+    font-size: xx-large;
+}
+.projects-img{
+    width: 90vw;
+    border-radius: 1vh;
+}
+footer{
+    background-color: black;
+    color: white;
+    padding: 2vh;
+    box-sizing: border-box;
+}
+@media(max-width:768px){
+    #logo{
+        position: fixed;
+        width: 100vw;
+        top: 14vh;
+        margin-left: -1vw;
+    }
+    #left{
+        position: fixed;
+        bottom: 3vh;
+        margin-left: 3vh;
+    }
+    #name{
+        font-size: 20vw;
+        padding: 0;
+        margin-left: -1vw;
+        margin-top: -7vw;
+        margin-bottom: -4vw;
+    }
+}
+@media(min-width:768px){
+    #logo{
+        position: fixed;
+        width: 50vw;
+        top: 14vh;
+        left: 25vw;
+        margin-left: -1vw;
+    }
+    #left{
+        position: fixed;
+        bottom: 3vh;
+        margin-left: 3vh;
+    }
+    h1{
+        font-size: 5vw;
+    }
+    #name{
+        font-size: 15vw;
+        padding: 0;
+        margin-left: -1vw;
+        margin-top: -5vw;
+        margin-bottom: -4vw;
+    }
+    header{
+        padding: 2vw;
+        font-size: 2vw;
+    }
+    h2,h3{
+        font-size: 5vw;
+    }
+    #mail{
+        font-size: 2vw;
+    }
+}

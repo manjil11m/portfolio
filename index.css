@@ -35,7 +35,7 @@ header{
 
 }
 svg{
-    margin: 1vw;
+    margin-right: 1vw;
 }
 #home{
     height: 100vh;
@@ -58,15 +58,17 @@ p{
     padding-bottom: 3vh;
     box-sizing: border-box;
     height: auto;
-
-      border-radius: 15px;
-      background: rgba(255, 255, 255, 0.2); /* semi-transparent */
-      backdrop-filter: blur(10px);          /* blur background behind */
-      -webkit-backdrop-filter: blur(10px);  /* Safari support */
-      border: 1px solid rgba(255, 255, 255, 0.3); /* subtle border */
-      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);  /* soft shadow */
-      color: black;
-      text-align: center;
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.2); /* semi-transparent */
+    backdrop-filter: blur(10px);          /* blur background behind */
+    -webkit-backdrop-filter: blur(10px);  /* Safari support */
+    border: 1px solid rgba(255, 255, 255, 0.3); /* subtle border */
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);  /* soft shadow */
+    color: black;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: space-between;
 }
 h2{
     font-size: xx-large;
@@ -100,38 +102,72 @@ footer{
         margin-top: -7vw;
         margin-bottom: -4vw;
     }
+    .header{
+        padding: 1vw;
+        border-radius: 1vw;
+    }
+    #projects{
+        display: block;
+        text-align: center;
+    }
 }
-@media(min-width:768px){
+@media(min-width:769px){
     #logo{
         position: fixed;
-        width: 50vw;
-        top: 14vh;
-        left: 25vw;
+        width: 40vw;
+        top: 10vh;
+        right: 10vw;
         margin-left: -1vw;
     }
     #left{
         position: fixed;
-        bottom: 3vh;
-        margin-left: 3vh;
+        bottom: 25vh;
+        margin-left: 20vh;
     }
     h1{
-        font-size: 5vw;
+        font-size: 3vw;
     }
     #name{
-        font-size: 15vw;
+        font-size: 9vw;
         padding: 0;
-        margin-left: -1vw;
-        margin-top: -5vw;
-        margin-bottom: -4vw;
+        margin-left: -.5vw;
+        margin-top: -3vw;
+        margin-bottom: -2vw;
     }
     header{
-        padding: 2vw;
         font-size: 2vw;
+        padding-left: 9vw;
+        padding-right: 15vw;
+        padding-top: 1vw;
+        padding-bottom: 1vw;
+    }
+    .header{
+        padding: 1vw;
+        font-size: 1.5vw;
+        border-radius: 1vw;
     }
     h2,h3{
-        font-size: 5vw;
+        font-size: 3vw;
     }
     #mail{
         font-size: 2vw;
+    }
+    .projects-img{
+        height: 70%;
+        width: 100%;
+        border-radius: 1vh;
+    }
+    span{
+        width: 30vw;
+        height: 25vw;
+    }
+}
+@media(min-width:2560px){
+    #mail{
+        font-size: 2vw;
+    }
+    svg{
+        width: 70px;
+        height: 70px;
     }
 }

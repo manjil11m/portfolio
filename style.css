@@ -1,0 +1,175 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #000;
+    color: #fff;
+    overflow-x: hidden;
+}
+
+/* Hero Section */
+.hero {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    text-align: center;
+    padding: 20px;
+}
+
+.content-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+/* Name Banner Styling (The Cut-Out Effect) */
+.name-banner {
+    background-color: #fff;
+    padding: 10px 20px;
+    position: relative;
+    display: inline-block;
+    margin-bottom: 50px;
+}
+
+.name-text {
+    color: #000;
+    font-size: clamp(2.5rem, 8vw, 7rem); /* Scales based on screen width */
+    font-weight: 800;
+    letter-spacing: 4px;
+    line-height: 1.1;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+/* The black bar running through the text */
+.black-stripe {
+    position: absolute;
+    top: 50%;
+    left: -5px; 
+    right: -5px; 
+    height: clamp(18px, 2.5vw, 28px);
+    background-color: #000;
+    transform: translateY(-50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.ai-text {
+    color: #fff;
+    font-size: clamp(0.7rem, 1.5vw, 1.1rem);
+    font-weight: 500;
+    letter-spacing: 1px;
+}
+
+/* Subtitle Styling */
+.subtitle {
+    margin-bottom: 60px;
+    font-size: clamp(1rem, 2.5vw, 1.5rem);
+    line-height: 1.6;
+    font-weight: 400;
+}
+
+/* Button Styling */
+.down-btn {
+    background-color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.down-btn:hover {
+    transform: translateY(5px);
+    background-color: #e0e0e0;
+}
+
+/* Next Section Styling */
+.upcoming-section {
+    width: 100%;
+    background-color:black; /* Slightly lighter black to distinguish the section */
+    color: #555;
+    transition: opacity 0.5s ease-in-out;
+}
+
+/* Visibility Classes controlled by JS */
+.hidden {
+    display: none;
+    opacity: 0;
+}
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 3.5rem; /* Spacing between the sections */
+    max-width: 800px;
+    width: 100%;
+    margin-left: 5vw;
+}
+
+.item-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem; /* Spacing between the text link and the icons below it */
+    align-items: flex-start;
+}
+
+/* Main Underlined Links */
+.main-link {
+    font-size: clamp(2.5rem, 6vw, 4.5rem); /* Scalable font size matching the image weight */
+    font-weight: 400;
+    color: #ffffff;
+    text-decoration: none;
+    border-bottom: 4px solid #ffffff; /* Thicker underline matching the image */
+    line-height: 1.1;
+    transition: opacity 0.2s ease;
+}
+
+.main-link:hover {
+    opacity: 0.7; /* Subtle hover effect */
+}
+
+/* Tool Logos Container */
+.tool-logos {
+    display: flex;
+    gap: 1rem; /* Spacing between tool logos */
+    align-items: center;
+    padding-top: 0.25rem;
+}
+
+/* Tool Logo Images */
+.tool-icon {
+    width: 32px;  /* Adjust size as needed for your design */
+    height: 32px;
+    object-fit: contain;
+    transition: filter 0.2s ease;
+}
+
+
+/* Mobile Specific Adjustments */
+@media (max-width: 600px) {
+    .name-banner {
+        padding: 5px 10px;
+    }
+    .down-btn {
+        width: 50px;
+        height: 50px;
+    }
+    .down-btn svg {
+        width: 24px;
+        height: 24px;
+    }
+    .black-stripe{
+        height: 1vh;
+    }
+}

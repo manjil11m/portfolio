@@ -1,70 +1,365 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manjil Aryal - Portfolio</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<title>Manjil Aryal — I use AI</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0a0a10;
+    --surface: #131320;
+    --surface-2: #191928;
+    --border: #26263a;
+    --text: #eef0f7;
+    --text-dim: #8d8fa8;
+    --accent: #7c5cff;
+    --accent-2: #33e6b8;
+    --radius: 14px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:
+      radial-gradient(ellipse 900px 500px at 15% -10%, rgba(124,92,255,0.18), transparent 60%),
+      radial-gradient(ellipse 700px 500px at 100% 10%, rgba(51,230,184,0.10), transparent 60%),
+      var(--bg);
+    color:var(--text);
+    font-family:'Inter', sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;}
+  h1,h2,h3{font-family:'Space Grotesk', sans-serif; font-weight:600; letter-spacing:-0.02em;}
+  :focus-visible{outline:2px solid var(--accent); outline-offset:3px; border-radius:4px;}
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important; transition:none !important;}
+  }
+
+  .wrap{max-width:1080px; margin:0 auto; padding:0 28px;}
+
+  /* ---------- nav ---------- */
+  nav.wrap{
+    display:flex; align-items:center; justify-content:space-between;
+    padding-top:32px; padding-bottom:32px;
+  }
+  .brand{font-family:'Space Grotesk', sans-serif; font-weight:600; font-size:18px;}
+  .nav-links{display:flex; align-items:center; gap:22px; font-size:14px; color:var(--text-dim);}
+  .nav-links a{transition:color .2s;}
+  .nav-links a:hover{color:var(--text);}
+  .status-pill{
+    display:inline-flex; align-items:center; gap:7px;
+    border:1px solid var(--border); border-radius:100px;
+    padding:6px 12px; font-size:13px; color:var(--text-dim);
+  }
+  .status-dot{width:7px; height:7px; border-radius:50%; background:var(--accent-2);
+    box-shadow:0 0 8px var(--accent-2);}
+
+  /* ---------- hero ---------- */
+  .hero{padding:64px 0 88px;}
+  .eyebrow{
+    font-size:13px; letter-spacing:0.08em; text-transform:uppercase;
+    color:var(--accent-2); font-weight:600; margin-bottom:18px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .hero h1{
+    font-size:clamp(38px, 6vw, 64px);
+    line-height:1.05;
+    max-width:820px;
+  }
+  .hero h1 .accent-text{
+    background:linear-gradient(90deg, var(--accent), var(--accent-2));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .hero p{
+    margin-top:22px; font-size:18px; color:var(--text-dim);
+    max-width:560px;
+  }
+  .hero-actions{display:flex; gap:14px; margin-top:34px; flex-wrap:wrap;}
+  .btn{
+    display:inline-flex; align-items:center; gap:8px;
+    padding:12px 22px; border-radius:100px; font-size:14px; font-weight:600;
+    text-decoration:none; transition:transform .2s, box-shadow .2s, background .2s;
+  }
+  .btn-primary{background:var(--text); color:var(--bg);}
+  .btn-primary:hover{transform:translateY(-2px); box-shadow:0 10px 26px rgba(124,92,255,0.28);}
+  .btn-ghost{border:1px solid var(--border); color:var(--text);}
+  .btn-ghost:hover{border-color:var(--accent); transform:translateY(-2px);}
+
+  /* ---------- section heading ---------- */
+  .section{padding:64px 0;}
+  .section-head{display:flex; align-items:baseline; justify-content:space-between; margin-bottom:34px; flex-wrap:wrap; gap:10px;}
+  .section-head h2{font-size:28px;}
+  .section-head span{color:var(--text-dim); font-size:14px;}
+
+  /* ---------- tool badges (signature element) ---------- */
+  .badges{display:flex; flex-wrap:wrap; gap:8px; margin-top:16px;}
+  .badge{
+    display:inline-flex; align-items:center; gap:6px;
+    background:var(--surface-2); border:1px solid var(--border);
+    padding:5px 10px 5px 6px; border-radius:100px; font-size:12.5px; color:var(--text-dim);
+  }
+  .badge img{width:15px; height:15px; object-fit:contain; border-radius:3px;}
+  .badge .dot{width:14px; height:14px; border-radius:50%;
+    background:linear-gradient(135deg, var(--accent), var(--accent-2));
+    display:inline-flex; align-items:center; justify-content:center;}
+  .badge .dot svg{width:9px; height:9px;}
+  .badge.ai{color:var(--accent-2); border-color:rgba(51,230,184,0.35);}
+
+  /* ---------- featured project (80sNet) ---------- */
+  .featured{
+    display:grid; grid-template-columns:1.05fr 1fr; gap:0;
+    border:1px solid var(--border); border-radius:var(--radius);
+    overflow:hidden; background:var(--surface);
+    transition:border-color .25s, transform .25s;
+  }
+  .featured:hover{border-color:var(--accent);}
+  .featured-info{padding:38px;}
+  .featured-tag{font-size:12px; color:var(--accent-2); font-weight:600; letter-spacing:.06em; text-transform:uppercase; margin-bottom:10px;}
+  .featured h3{font-size:26px; margin-bottom:10px;}
+  .featured p{color:var(--text-dim); font-size:15px; max-width:400px;}
+  .featured-link{
+    margin-top:22px; display:inline-flex; align-items:center; gap:8px;
+    font-size:14px; font-weight:600; color:var(--text); text-decoration:none;
+  }
+  .featured-link svg{transition:transform .2s;}
+  .featured:hover .featured-link svg{transform:translate(3px,-3px);}
+
+  @media (max-width:720px){
+    .featured{grid-template-columns:1fr;}
+  }
+
+  .featured-list{display:flex; flex-direction:column; gap:22px;}
+
+  /* ---------- featured preview image ---------- */
+  /* Take a screenshot of the site, host it anywhere (imgur, github, etc.),
+     and put the URL in the <img src="..."> below each featured card. */
+  .shot-preview{
+    background:#000; display:flex; flex-direction:column;
+    min-height:260px; border-left:1px solid var(--border); overflow:hidden;
+  }
+  .shot-preview img{flex:1; width:100%; height:100%; object-fit:cover; display:block;}
+  @media (max-width:720px){
+    .shot-preview{min-height:200px; border-left:none; border-top:1px solid var(--border);}
+  }
+
+  /* ---------- project grid ---------- */
+  .grid{display:grid; grid-template-columns:repeat(2, 1fr); gap:18px;}
+  @media (max-width:720px){.grid{grid-template-columns:1fr;}}
+  .card{
+    border:1px solid var(--border); border-radius:var(--radius);
+    background:var(--surface); padding:28px;
+    transition:transform .2s, border-color .2s;
+  }
+  .card:hover{transform:translateY(-3px); border-color:var(--accent);}
+  .card h3{font-size:19px; margin-bottom:8px;}
+  .card p{color:var(--text-dim); font-size:14px;}
+
+  /* ---------- web projects list ---------- */
+  .weblist{
+    border:1px solid var(--border); border-radius:var(--radius);
+    background:var(--surface); overflow:hidden;
+  }
+  .weblist a{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 24px; text-decoration:none; font-size:15px; font-weight:500;
+    border-bottom:1px solid var(--border);
+    transition:background .2s, padding-left .2s;
+  }
+  .weblist a:last-child{border-bottom:none;}
+  .weblist a:hover{background:var(--surface-2); padding-left:30px;}
+  .weblist a .arrow{color:var(--text-dim); transition:transform .2s;}
+  .weblist a:hover .arrow{transform:translate(3px,-3px); color:var(--accent-2);}
+
+  /* ---------- galleries (logo / image generation) ---------- */
+  .gallery-grid{
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(160px, 1fr)); gap:14px;
+  }
+  .gallery-item{
+    aspect-ratio:1; border-radius:12px; overflow:hidden;
+    border:1px solid var(--border); background:var(--surface);
+  }
+  .gallery-item img{
+    width:100%; height:100%; object-fit:cover; display:block;
+    transition:transform .3s;
+  }
+  .gallery-item:hover img{transform:scale(1.06);}
+  .gallery-item.placeholder{
+    display:flex; align-items:center; justify-content:center;
+    border-style:dashed; color:var(--text-dim); font-size:13px; text-align:center; padding:12px;
+  }
+
+  /* ---------- footer ---------- */
+  footer{border-top:1px solid var(--border); margin-top:40px;}
+  .footer-inner{
+    padding:48px 0 64px; display:flex; flex-direction:column; align-items:flex-start; gap:18px;
+  }
+  footer h2{font-size:clamp(28px, 5vw, 40px);}
+  .footer-email{
+    color:var(--accent-2); font-size:18px; text-decoration:none; font-weight:600;
+  }
+  .footer-bottom{color:var(--text-dim); font-size:13px;}
+</style>
 </head>
 <body>
 
-    <section class="hero">
-        <div class="content-wrapper">  
-            <div class="name-banner">
-                <h1 class="name-text">MANJIL ARYAL</h1>
-                <div class="black-stripe">
-                    <span class="ai-text">I use AI</span>
-                </div>
-            </div>
-            <div class="subtitle">
-                <p>I don't know what I'm capable of.</p>
-                <p>Ask me, and maybe I'll be able to help.</p>
-            </div>
-            <button id="reveal-btn" class="down-btn" aria-label="Reveal next section">
-                <svg viewBox="0 0 24 24" width="28" height="28" stroke="#000" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="6 9 12 15 18 9"></polyline>
-                </svg>
-            </button>
-            <p style="margin-top: 5vw;">manjilaryal11@gmail.com</p>
+<nav class="wrap">
+  <div class="brand">MANJIL ARYAL</div>
+  <div class="nav-links">
+    <a href="#work">Work</a>
+    <a href="mailto:manjilaryal11@gmail.com">Contact</a>
+    <span class="status-pill"><span class="status-dot"></span> Building with AI</span>
+  </div>
+</nav>
+
+<header class="hero wrap">
+  <div class="eyebrow">◆ Designer &amp; builder</div>
+  <h1>I use <span class="accent-text">AI</span> to design,<br>build, and ship things.</h1>
+  <p>I don't know what I'm capable of yet. Every project below was made with an AI tool in the loop — ask me, and maybe I'll be able to help with yours too.</p>
+  <div class="hero-actions">
+    <a class="btn btn-primary" href="#work">See my work</a>
+    <a class="btn btn-ghost" href="mailto:manjilaryal11@gmail.com">Get in touch →</a>
+  </div>
+</header>
+
+<main class="wrap" id="work">
+
+  <section class="section">
+    <div class="section-head">
+      <h2>Featured</h2>
+      <span>Latest builds</span>
+    </div>
+    <div class="featured-list">
+      <a class="featured" href="https://80snet.vercel.app/" target="_blank" rel="noopener" style="text-decoration:none; color:inherit;">
+        <div class="featured-info">
+          <div class="featured-tag">Web App</div>
+          <h3>80sNet</h3>
+          <p>A retro green-screen terminal search engine — type a query, get real sites, images and videos back, styled like it's 1985.</p>
+          <div class="badges">
+            <span class="badge ai"><span class="dot"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2L14 10L22 12L14 14L12 22L10 14L2 12L10 10L12 2Z" fill="#0a0a10"/></svg></span> Claude</span>
+            <span class="badge">HTML</span>
+            <span class="badge">CSS</span>
+            <span class="badge">JavaScript</span>
+          </div>
+          <span class="featured-link">Visit 80sNet
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M7 17L17 7M7 7h10v10"/></svg>
+          </span>
         </div>
-    </section>
-   <section id="next-section" class="upcoming-section">
-        <div style="text-align: center;">
-            <div class="name-banner">
-                <h1 class="name-text" >WORKS</h1>
-                <div class="black-stripe">
-                    <span class="ai-text">Some of my</span>
-                </div>
-            </div>
+        <div class="shot-preview">
+          <img src="SCREENSHOT_URL_HERE" alt="80sNet screenshot">
         </div>
-    </section>
-    <section class="container">
-        <section class="item-group">
-            <a href="logo.html" class="main-link">logo</a>
-            <div class="tool-logos">
-                <img src="illustrator.webp" alt="Adobe Illustrator" title="Adobe Illustrator" class="tool-icon">
-                <img src="gemini.webp" alt="Google Gemini" title="Google Gemini" class="tool-icon">
-            </div>
-        </section>
+      </a>
 
-        <section class="item-group">
-            <a href="img.html" class="main-link">image generation</a>
-            <div class="tool-logos">
-                <img src="gemini.webp" alt="Google Gemini" title="Google Gemini" class="tool-icon">
-            </div>
-        </section>
+      <a class="featured" href="https://quiky.vercel.app/" target="_blank" rel="noopener" style="text-decoration:none; color:inherit;">
+        <div class="featured-info">
+          <div class="featured-tag">Web App</div>
+          <h3>Quiky</h3>
+          <p>Free social media mockup generator — create realistic Instagram, TikTok, and Facebook mockups. No login, no watermark.</p>
+          <div class="badges">
+            <span class="badge ai"><span class="dot"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2L14 10L22 12L14 14L12 22L10 14L2 12L10 10L12 2Z" fill="#0a0a10"/></svg></span> Claude</span>
+            <span class="badge">HTML</span>
+            <span class="badge">CSS</span>
+            <span class="badge">JavaScript</span>
+          </div>
+          <span class="featured-link">Visit Quiky
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M7 17L17 7M7 7h10v10"/></svg>
+          </span>
+        </div>
+        <div class="shot-preview">
+          <img src="SCREENSHOT_URL_HERE" alt="Quiky screenshot">
+        </div>
+      </a>
+    </div>
+  </section>
 
-        <section class="item-group">
-            <a href="webpage.html" class="main-link">webpage</a>
-            <div class="tool-logos">
-                <img src="html.webp" alt="HTML5" title="HTML5" class="tool-icon">
-                <img src="css.webp" alt="CSS3" title="CSS3" class="tool-icon">
-                <img src="js.png" alt="JavaScript" title="JavaScript" class="tool-icon">
-                <img src="gemini.webp" alt="Google Gemini" title="Google Gemini" class="tool-icon">
-            </div>
-        </section>
+  <section class="section">
+    <div class="section-head">
+      <h2>More work</h2>
+      <span>Logo &amp; image design</span>
+    </div>
+    <div class="grid">
+      <a class="card" href="#logo-gallery" style="text-decoration:none; color:inherit; display:block;">
+        <h3>Logo Design ↓</h3>
+        <p>Brand marks and identity work.</p>
+        <div class="badges">
+          <span class="badge">Illustrator</span>
+          <span class="badge ai">Gemini</span>
+        </div>
+      </a>
+      <a class="card" href="#img-gallery" style="text-decoration:none; color:inherit; display:block;">
+        <h3>Image Generation ↓</h3>
+        <p>AI-generated visuals and concept art.</p>
+        <div class="badges">
+          <span class="badge ai">Gemini</span>
+        </div>
+      </a>
+    </div>
+  </section>
 
-    </section>
-    <script src="script.js"></script>
+  <section class="section">
+    <div class="section-head">
+      <h2>Web projects</h2>
+      <span>HTML · CSS · JS · Gemini</span>
+    </div>
+    <div class="weblist">
+      <a href="https://manjilaryal546.github.io/collection-of-films/" target="_blank" rel="noopener">FILMs <span class="arrow">↗</span></a>
+      <a href="https://manjilaryal.github.io/MQP/" target="_blank" rel="noopener">MCQ <span class="arrow">↗</span></a>
+      <a href="https://manjilaryal.github.io/SquidGame/" target="_blank" rel="noopener">Invitation <span class="arrow">↗</span></a>
+      <a href="https://manjilaryal.github.io/IMDc/" target="_blank" rel="noopener">IMDc <span class="arrow">↗</span></a>
+      <a href="https://manjilaryal.github.io/biralo/" target="_blank" rel="noopener">Biralo <span class="arrow">↗</span></a>
+      <a href="https://manjilaryal.github.io/Earn-Money/" target="_blank" rel="noopener">Quiz <span class="arrow">↗</span></a>
+      <a href="https://manjilaryal.github.io/Discover-Cats/" target="_blank" rel="noopener">Cats <span class="arrow">↗</span></a>
+    </div>
+  </section>
+
+  <section class="section" id="logo-gallery">
+    <div class="section-head">
+      <h2>Logo gallery</h2>
+      <span>Illustrator · Gemini</span>
+    </div>
+    <!-- HOW TO ADD A NEW LOGO:
+         Copy one <div class="gallery-item">...</div> block and paste it
+         below, then change the image src and alt text. Delete the
+         "placeholder" items below once you have real images. -->
+    <div class="gallery-grid">
+      <div class="gallery-item placeholder">
+          <img src="botan.jpg" alt="80sNet screenshot">
+      </div>
+      <div class="gallery-item placeholder">Add image<br>&lt;img src="..."&gt;</div>
+      <div class="gallery-item placeholder">Add image<br>&lt;img src="..."&gt;</div>
+      <!-- Example of a real item once you have an image URL:
+      <div class="gallery-item">
+        <img src="IMAGE_URL_HERE" alt="Logo description">
+      </div>
+      -->
+    </div>
+  </section>
+
+  <section class="section" id="img-gallery">
+    <div class="section-head">
+      <h2>Image gallery</h2>
+      <span>Gemini</span>
+    </div>
+    <!-- HOW TO ADD A NEW GENERATED IMAGE:
+         Same pattern as above — copy a <div class="gallery-item"> block,
+         paste it below, and swap in the image src/alt. -->
+    <div class="gallery-grid">
+      <div class="gallery-item placeholder">Add image<br>&lt;img src="..."&gt;</div>
+      <div class="gallery-item placeholder">Add image<br>&lt;img src="..."&gt;</div>
+      <div class="gallery-item placeholder">Add image<br>&lt;img src="..."&gt;</div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap footer-inner">
+    <h2>Let's build something.</h2>
+    <a class="footer-email" href="mailto:manjilaryal11@gmail.com">manjilaryal11@gmail.com</a>
+    <div class="footer-bottom">Designed &amp; built with AI in the loop.</div>
+  </div>
+</footer>
+
 </body>
 </html>

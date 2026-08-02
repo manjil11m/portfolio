@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manjil Aryal — I use AI</title>
+<meta name="description" content="Manjil Aryal — designer & builder who ships with AI in the loop. A corkboard of everything I've made.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Special+Elite&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cork-1:#8f6038; --cork-2:#6d4526; --cork-3:#573719;
+    --paper:#f7f1e2; --paper-2:#efe4c9; --paper-yellow:#f6dd7f; --paper-blue:#dce8e6;
+    --ink:#2b2118; --ink-soft:#6b5d4c;
+    --pin-red:#d8453b; --pin-teal:#2f8f83; --pin-amber:#d99a2b;
+    --string:#a53a2f;
+    font-size:16px;
+  }
+  *{ box-sizing:border-box; }
+  body{
+    margin:0; background:var(--cork-2); color:var(--ink);
+    font-family:'Inter', sans-serif; line-height:1.5; overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{ color:inherit; text-decoration:none; }
+  .hand{ font-family:'Caveat', cursive; }
+  .typed{ font-family:'Special Elite', monospace; }
+
+  .cork-bg{
+    position:fixed; inset:0; z-index:-1;
+    background:
+      radial-gradient(circle at 20% 30%, rgba(0,0,0,0.12) 0, transparent 3%),
+      radial-gradient(circle at 60% 70%, rgba(0,0,0,0.1) 0, transparent 3%),
+      radial-gradient(circle at 80% 20%, rgba(0,0,0,0.12) 0, transparent 2.5%),
+      radial-gradient(circle at 40% 85%, rgba(0,0,0,0.1) 0, transparent 2.5%),
+      radial-gradient(circle at 10% 60%, rgba(0,0,0,0.1) 0, transparent 2.5%),
+      linear-gradient(160deg, var(--cork-1), var(--cork-2) 55%, var(--cork-3));
+    background-size: 140px 140px, 160px 160px, 150px 150px, 130px 130px, 145px 145px, 100% 100%;
+  }
+
+  /* ---------------- HEADER ---------------- */
+  .board-header{
+    position:sticky; top:0; z-index:100;
+    background:rgba(87,55,25,0.72); backdrop-filter:blur(10px);
+    border-bottom:2px solid rgba(0,0,0,0.2);
+    display:flex; align-items:center; justify-content:space-between;
+    padding:12px 26px;
+  }
+  .brand{ font-family:'Caveat', cursive; font-weight:700; font-size:1.7rem; color:var(--paper); }
+  .brand .pin-dot{ display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--pin-red); margin-right:6px; box-shadow:0 0 0 3px rgba(216,69,59,0.25); }
+  .h-cta{
+    font-family:'Special Elite', monospace; font-size:0.78rem; color:var(--paper);
+    border:1px solid rgba(247,241,226,0.35); padding:8px 16px; border-radius:4px;
+  }
+  .h-cta:hover{ background:rgba(247,241,226,0.12); }
+
+  /* ---------------- BOARD / CLUSTERS ---------------- */
+  .board{ max-width:1080px; margin:0 auto; padding:50px 26px 90px; position:relative; }
+  .cluster{ margin-bottom:86px; }
+  .board-label{
+    font-family:'Caveat', cursive; font-weight:700; font-size:1.7rem; color:var(--paper);
+    text-align:center; margin:0 0 34px; opacity:0.9;
+  }
+
+  /* ---------------- PIN ---------------- */
+  [data-pin]{ position:relative; touch-action:pan-y; will-change:transform; transition:transform 0.45s cubic-bezier(.34,1.56,.64,1), opacity 0.5s ease; }
+  [data-pin].dragging{ transition:none; }
+  .pin-dot-el{
+    position:absolute; top:-9px; left:50%; transform:translateX(-50%);
+    width:15px; height:15px; border-radius:50%; z-index:2;
+    background:radial-gradient(circle at 32% 30%, #fff8, transparent 40%), var(--pin-red);
+    box-shadow:0 3px 5px rgba(0,0,0,0.4);
+  }
+  .pin-dot-el.teal{ background:radial-gradient(circle at 32% 30%, #fff8, transparent 40%), var(--pin-teal); }
+  .pin-dot-el.amber{ background:radial-gradient(circle at 32% 30%, #fff8, transparent 40%), var(--pin-amber); }
+
+  /* ---------------- HERO CLUSTER ---------------- */
+  .hero-cluster{ display:flex; flex-wrap:wrap; gap:34px; justify-content:center; padding-top:10px; }
+  .marker-card{
+    background:var(--paper); padding:30px 32px; border-radius:3px; max-width:420px;
+    box-shadow:0 16px 30px -12px rgba(0,0,0,0.5);
+  }
+  .marker-card .hand{ font-size:2.5rem; font-weight:700; line-height:1.1; color:var(--ink); }
+  .sticky{
+    padding:24px 22px; border-radius:2px; max-width:260px; align-self:flex-start;
+    box-shadow:0 12px 24px -10px rgba(0,0,0,0.5);
+    position:relative;
+  }
+  .sticky::after{
+    content:''; position:absolute; right:0; bottom:0; width:0; height:0;
+    border-style:solid; border-width:0 0 20px 20px; border-color:transparent transparent rgba(0,0,0,0.12) transparent;
+  }
+  .sticky-yellow{ background:var(--paper-yellow); }
+  .sticky-blue{ background:var(--paper-blue); }
+  .sticky p.typed{ font-size:0.9rem; line-height:1.5; margin:0; }
+
+  /* ---------------- SHELF (flex wrap groups) ---------------- */
+  .shelf{ display:flex; flex-wrap:wrap; gap:30px; justify-content:center; }
+
+  /* polaroid */
+  .polaroid{
+    display:block; background:var(--paper); padding:12px 12px 16px; width:230px;
+    box-shadow:0 14px 26px -10px rgba(0,0,0,0.5);
+  }
+  .polaroid .shot{ height:150px; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+  .p-80s{ background:repeating-linear-gradient(0deg, rgba(0,0,0,0.15) 0 1px, transparent 1px 3px), linear-gradient(160deg, #0c1c12, #163825); }
+  .p-80s span{ font-family:'Special Elite', monospace; color:#7cffa0; font-size:0.72rem; }
+  .p-quiky{ background:linear-gradient(150deg, #efe6ff, #d8cbff 55%, #ffd7e8); gap:8px; }
+  .p-quiky .ph{ width:26px; height:46px; border-radius:5px; background:#fff; border:2px solid var(--ink); }
+  .p-quiky .ph.mid{ transform:translateY(-4px) scale(1.08); }
+  .polaroid .cap{ font-family:'Caveat', cursive; font-size:1.3rem; text-align:center; margin-top:10px; color:var(--ink); }
+  .polaroid .desc{ font-size:0.76rem; color:var(--ink-soft); text-align:center; margin-top:2px; }
+
+  /* logo pins */
+  .logo-shelf .logo-pin{
+    background:#fff; padding:14px; width:120px; height:120px;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 10px 20px -8px rgba(0,0,0,0.45);
+  }
+  .logo-pin img{ max-width:100%; max-height:100%; object-fit:contain; }
+
+  /* photo pins (generated art) */
+  .photo-shelf .photo-pin{
+    background:var(--paper); padding:8px 8px 12px; width:130px;
+    box-shadow:0 10px 20px -8px rgba(0,0,0,0.45);
+  }
+  .photo-pin img{ width:100%; height:96px; object-fit:cover; display:block; }
+
+  /* tickets (web projects) */
+  .ticket-shelf .ticket{
+    background:var(--paper-2); font-family:'Special Elite', monospace; font-size:0.82rem;
+    padding:12px 18px; border-radius:2px; box-shadow:0 8px 16px -8px rgba(0,0,0,0.45);
+    border-left:2px dashed rgba(0,0,0,0.25);
+  }
+  .ticket:hover{ background:#fff; }
+
+  /* contact cluster */
+  .contact-cluster{ display:flex; flex-wrap:wrap; gap:34px; justify-content:center; margin-bottom:60px; }
+  .business-card{
+    display:block; background:var(--paper); padding:26px 28px; width:280px;
+    box-shadow:0 16px 30px -12px rgba(0,0,0,0.5);
+  }
+  .business-card .bc-name{ font-family:'Caveat', cursive; font-weight:700; font-size:1.6rem; }
+  .business-card .bc-role{ font-family:'Special Elite', monospace; font-size:0.72rem; color:var(--ink-soft); margin-top:2px; }
+  .business-card .bc-email{ font-family:'Special Elite', monospace; font-size:0.82rem; margin-top:16px; border-top:1px dashed rgba(0,0,0,0.2); padding-top:14px; }
+  .business-card .bc-cta{ margin-top:14px; font-family:'Caveat', cursive; font-weight:700; font-size:1.2rem; color:var(--pin-red); }
+
+  footer{ text-align:center; padding:24px; font-family:'Special Elite', monospace; font-size:0.72rem; color:rgba(247,241,226,0.5); }
+
+  @media (max-width:640px){
+    .marker-card .hand{ font-size:1.9rem; }
+    .board{ padding:36px 16px 70px; }
+    .cluster{ margin-bottom:64px; }
+    .shelf{ gap:20px; }
+    .polaroid{ width:190px; }
+    .business-card{ width:100%; max-width:300px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cork-bg" aria-hidden="true"></div>
+
+<header class="board-header">
+  <div class="brand"><span class="pin-dot"></span>Manjil Aryal</div>
+  <a class="h-cta typed" href="mailto:manjilaryal11@gmail.com">✎ new message</a>
+</header>
+
+<main class="board">
+
+  <section class="cluster hero-cluster">
+    <div class="marker-card" data-pin>
+      <span class="pin-dot-el"></span>
+      <div class="hand">I use AI to design, build, and ship things.</div>
+    </div>
+    <div class="sticky sticky-yellow" data-pin>
+      <span class="pin-dot-el teal"></span>
+      <p class="typed">Designer &amp; builder. Claude for the code, Gemini for the visuals.</p>
+    </div>
+  </section>
+
+  <section class="cluster">
+    <h2 class="board-label">— featured —</h2>
+    <div class="shelf">
+      <a class="polaroid" data-pin href="https://80snet.vercel.app/" target="_blank" rel="noopener">
+        <span class="pin-dot-el"></span>
+        <div class="shot p-80s"><span>&gt; search: 1985_</span></div>
+        <div class="cap">80sNet</div>
+        <div class="desc">retro terminal search engine</div>
+      </a>
+      <a class="polaroid" data-pin href="https://quiky.vercel.app/" target="_blank" rel="noopener">
+        <span class="pin-dot-el teal"></span>
+        <div class="shot p-quiky"><div class="ph"></div><div class="ph mid"></div><div class="ph"></div></div>
+        <div class="cap">Quiky</div>
+        <div class="desc">social mockup generator</div>
+      </a>
+    </div>
+  </section>
+
+  <section class="cluster">
+    <h2 class="board-label">— logos —</h2>
+    <div class="shelf logo-shelf">
+      <div class="logo-pin" data-pin><span class="pin-dot-el amber"></span><img src="quky.jpg" alt="Quiky logo" loading="lazy"></div>
+      <div class="logo-pin" data-pin><span class="pin-dot-el"></span><img src="conceptgate.jpg" alt="Conceptgate logo" loading="lazy"></div>
+      <div class="logo-pin" data-pin><span class="pin-dot-el teal"></span><img src="botan.jpg" alt="Botan logo" loading="lazy"></div>
+    </div>
+  </section>
+
+  <section class="cluster">
+    <h2 class="board-label">— generated art —</h2>
+    <div class="shelf photo-shelf">
+      <div class="photo-pin" data-pin><span class="pin-dot-el"></span><img src="quiky-1.png" alt="Quiky generated visual" loading="lazy"></div>
+      <div class="photo-pin" data-pin><span class="pin-dot-el teal"></span><img src="allocation.jpg" alt="Allocation generated visual" loading="lazy"></div>
+      <div class="photo-pin" data-pin><span class="pin-dot-el amber"></span><img src="ecnomicsystem.jpg" alt="Economic system generated visual" loading="lazy"></div>
+      <div class="photo-pin" data-pin><span class="pin-dot-el"></span><img src="quiky1.jpg" alt="Quiky generated visual" loading="lazy"></div>
+      <div class="photo-pin" data-pin><span class="pin-dot-el teal"></span><img src="quiky2.jpg" alt="Quiky generated visual" loading="lazy"></div>
+      <div class="photo-pin" data-pin><span class="pin-dot-el amber"></span><img src="ppc.jpg" alt="PPC generated visual" loading="lazy"></div>
+      <div class="photo-pin" data-pin><span class="pin-dot-el"></span><img src="multistep.jpg" alt="Multistep generated visual" loading="lazy"></div>
+      <div class="photo-pin" data-pin><span class="pin-dot-el teal"></span><img src="multistepsoln.jpg" alt="Multistep solution generated visual" loading="lazy"></div>
+      <div class="photo-pin" data-pin><span class="pin-dot-el amber"></span><img src="it.jpg" alt="IT generated visual" loading="lazy"></div>
+      <div class="photo-pin" data-pin><span class="pin-dot-el"></span><img src="eco.jpg" alt="Eco generated visual" loading="lazy"></div>
+      <div class="photo-pin" data-pin><span class="pin-dot-el teal"></span><img src="dflbr.jpg" alt="Dflbr generated visual" loading="lazy"></div>
+    </div>
+  </section>
+
+  <section class="cluster">
+    <h2 class="board-label">— more builds —</h2>
+    <div class="shelf ticket-shelf">
+      <a class="ticket" data-pin href="https://manjilaryal546.github.io/collection-of-films/" target="_blank" rel="noopener">FILMs ↗</a>
+      <a class="ticket" data-pin href="https://manjilaryal.github.io/MQP/" target="_blank" rel="noopener">MCQ ↗</a>
+      <a class="ticket" data-pin href="https://manjilaryal.github.io/SquidGame/" target="_blank" rel="noopener">Invitation ↗</a>
+      <a class="ticket" data-pin href="https://manjilaryal.github.io/IMDc/" target="_blank" rel="noopener">IMDc ↗</a>
+      <a class="ticket" data-pin href="https://manjilaryal.github.io/biralo/" target="_blank" rel="noopener">Biralo ↗</a>
+      <a class="ticket" data-pin href="https://manjilaryal.github.io/Earn-Money/" target="_blank" rel="noopener">Quiz ↗</a>
+      <a class="ticket" data-pin href="https://manjilaryal.github.io/Discover-Cats/" target="_blank" rel="noopener">Cats ↗</a>
+    </div>
+  </section>
+
+  <section class="contact-cluster">
+    <div class="sticky sticky-blue" data-pin>
+      <span class="pin-dot-el"></span>
+      <p class="typed">I don't know what I'm capable of yet — ask me, and maybe I'll be able to help.</p>
+    </div>
+    <a class="business-card" data-pin href="mailto:manjilaryal11@gmail.com">
+      <span class="pin-dot-el amber"></span>
+      <div class="bc-name">Manjil Aryal</div>
+      <div class="bc-role">designer &amp; builder</div>
+      <div class="bc-email">manjilaryal11@gmail.com</div>
+      <div class="bc-cta">Get in touch →</div>
+    </a>
+  </section>
+
+</main>
+
+<footer>pinned together with AI in the loop</footer>
+
+<script>
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var rotations = [-4, 3, -2, 5, -3, 2, 4, -5, 3, -2, 4, -3, 2, -4, 5, -2];
+
+  var pins = document.querySelectorAll('[data-pin]');
+  pins.forEach(function(el, i){
+    var r = rotations[i % rotations.length];
+    el.dataset.rot = r;
+    el.style.setProperty('transform', 'rotate(' + r + 'deg)');
+  });
+
+  if (!reduceMotion){
+    pins.forEach(function(el){
+      var dragging = false, startX = 0, moved = false, baseDeg = parseFloat(el.dataset.rot);
+
+      function onDown(e){
+        dragging = true; moved = false;
+        startX = e.clientX;
+        el.classList.add('dragging');
+      }
+      function onMove(e){
+        if (!dragging) return;
+        var dx = e.clientX - startX;
+        if (Math.abs(dx) > 4) moved = true;
+        var extra = Math.max(-26, Math.min(26, dx * 0.35));
+        el.style.transform = 'rotate(' + (baseDeg + extra) + 'deg)';
+      }
+      function onUp(e){
+        if (!dragging) return;
+        dragging = false;
+        el.classList.remove('dragging');
+        el.style.transform = 'rotate(' + baseDeg + 'deg)';
+        if (moved){
+          var suppress = function(ev){ ev.preventDefault(); el.removeEventListener('click', suppress); };
+          el.addEventListener('click', suppress);
+        }
+      }
+
+      el.addEventListener('pointerdown', onDown);
+      el.addEventListener('pointermove', onMove);
+      el.addEventListener('pointerup', onUp);
+      el.addEventListener('pointercancel', onUp);
+      el.addEventListener('pointerleave', function(e){ if (dragging && e.buttons === 0) onUp(e); });
+    });
+  }
+
+  /* scroll-reveal settle-in */
+  if (window.matchMedia('(prefers-reduced-motion: no-preference)').matches && 'IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if (entry.isIntersecting){
+          entry.target.style.opacity = 1;
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.2 });
+    pins.forEach(function(el){ el.style.opacity = 0; io.observe(el); });
+  }
+</script>
+
+</body>
+</html>

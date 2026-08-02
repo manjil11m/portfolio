@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manjil Aryal — I use AI</title>
+<meta name="description" content="Manjil Aryal — designer & builder who ships with AI in the loop. Explore the desktop.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --wall-1:#0a0b10; --wall-2:#141226; --wall-3:#0d1a1c;
+    --violet:#7c6cff; --teal:#22d3c0; --coral:#ff6b6b; --amber:#febc2e;
+    --glass:rgba(245,244,250,0.94);
+    --glass-2:rgba(255,255,255,0.65);
+    --ink:#15151c; --ink-soft:#5c5d6f; --line:rgba(21,21,28,0.1);
+    font-size:16px;
+  }
+  *{ box-sizing:border-box; }
+  html,body{ height:100%; }
+  body{
+    margin:0; overflow:hidden; background:var(--wall-1); color:var(--ink);
+    font-family:'Inter', sans-serif; -webkit-font-smoothing:antialiased;
+  }
+  @media (max-width:760px){ body{ overflow-y:auto; } }
+  a{ color:inherit; text-decoration:none; }
+  button{ font-family:inherit; cursor:pointer; }
+  .mono{ font-family:'IBM Plex Mono', monospace; }
+
+  /* ---------------- WALLPAPER ---------------- */
+  .wallpaper{ position:fixed; inset:0; z-index:0; background:linear-gradient(160deg, var(--wall-1), var(--wall-2) 55%, var(--wall-3)); overflow:hidden; }
+  .blob{ position:absolute; border-radius:50%; filter:blur(70px); opacity:0.5; }
+  .blob-1{ width:480px; height:480px; background:var(--violet); top:-8%; left:8%; }
+  .blob-2{ width:420px; height:420px; background:var(--teal); bottom:-10%; right:6%; opacity:0.35; }
+  .blob-3{ width:340px; height:340px; background:var(--coral); top:38%; right:26%; opacity:0.22; }
+  .grain2{ position:absolute; inset:0; opacity:0.5; background-image:radial-gradient(rgba(255,255,255,0.04) 0.6px, transparent 0.6px); background-size:20px 20px; }
+
+  /* ---------------- MENU BAR ---------------- */
+  .menubar{
+    position:fixed; top:0; left:0; right:0; height:38px; z-index:200;
+    background:rgba(10,11,16,0.55); backdrop-filter:blur(16px);
+    border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; justify-content:space-between;
+    padding:0 16px; color:#eceaf4; font-size:0.82rem;
+  }
+  .mb-left{ display:flex; align-items:center; gap:18px; }
+  .mb-brand{ display:flex; align-items:center; gap:7px; font-weight:600; }
+  .mb-brand .diamond{ color:var(--violet); }
+  .mb-menu{ color:rgba(236,234,244,0.7); }
+  .mb-menu:hover{ color:#fff; }
+  .mb-right{ display:flex; align-items:center; gap:16px; color:rgba(236,234,244,0.75); font-size:0.76rem; }
+  .mb-right .dot{ width:6px; height:6px; border-radius:50%; background:var(--teal); display:inline-block; margin-right:5px; animation:pulse 1.8s ease-in-out infinite; }
+  @keyframes pulse{ 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+  @media (max-width:600px){ .mb-menu{ display:none; } }
+
+  /* ---------------- DESKTOP ICONS ---------------- */
+  .desktop{
+    position:fixed; top:38px; left:0; right:0; bottom:96px; z-index:5;
+    padding:22px; display:flex; flex-direction:column; flex-wrap:wrap; gap:6px; align-content:flex-start;
+  }
+  .icon{
+    width:88px; background:none; border:none; padding:10px 4px; border-radius:10px;
+    display:flex; flex-direction:column; align-items:center; gap:6px;
+    color:#eceaf4; text-shadow:0 1px 3px rgba(0,0,0,0.4);
+  }
+  .icon:hover, .icon:focus-visible{ background:rgba(255,255,255,0.08); }
+  .icon .glyph{ font-size:1.9rem; line-height:1; filter:drop-shadow(0 4px 10px rgba(0,0,0,0.35)); }
+  .icon span{ font-size:0.72rem; text-align:center; }
+  @media (max-width:760px){ .desktop{ display:none; } }
+
+  /* ---------------- WINDOWS ---------------- */
+  .window{
+    display:none; position:fixed; z-index:20; flex-direction:column;
+    background:var(--glass); border-radius:13px; overflow:hidden;
+    box-shadow:0 30px 70px -20px rgba(0,0,0,0.55), 0 0 0 1px rgba(0,0,0,0.06);
+    min-width:280px; min-height:220px;
+  }
+  .window.open{ display:flex; }
+  .titlebar{
+    height:36px; flex-shrink:0; display:flex; align-items:center; gap:10px; padding:0 12px;
+    background:rgba(255,255,255,0.5); border-bottom:1px solid rgba(0,0,0,0.06);
+    cursor:grab; touch-action:none;
+  }
+  .titlebar:active{ cursor:grabbing; }
+  .traffic{ display:flex; gap:7px; }
+  .traffic span{ width:11px; height:11px; border-radius:50%; display:flex; align-items:center; justify-content:center; border:none; padding:0; position:relative; }
+  .traffic span::before{ content:''; position:absolute; inset:-6px; }
+  .t-close{ background:#ff5f57; font-size:8px; color:rgba(0,0,0,0); }
+  .t-close:hover{ color:rgba(0,0,0,0.5); }
+  .t-close::after{ content:'×'; font-size:9px; line-height:1; }
+  .t-min{ background:#febc2e; }
+  .t-max{ background:#28c840; }
+  .wtitle{ font-size:0.78rem; font-weight:600; color:var(--ink-soft); margin:0 auto; transform:translateX(-14px); }
+  .wcontent{ padding:20px; overflow-y:auto; flex:1; font-size:0.92rem; line-height:1.55; color:var(--ink); }
+  .wcontent::-webkit-scrollbar{ width:7px; }
+  .wcontent::-webkit-scrollbar-thumb{ background:rgba(0,0,0,0.15); border-radius:999px; }
+
+  @media (max-width:760px){
+    .window{
+      position:fixed !important; top:38px !important; left:0 !important; right:0 !important; bottom:70px !important;
+      width:auto !important; height:auto !important; border-radius:0 !important;
+    }
+  }
+
+  /* ---------- window content shared ---------- */
+  .w-tagline{ font-size:1.15rem; font-weight:600; margin:0 0 12px; }
+  .w-body p{ margin:0 0 12px; color:var(--ink-soft); }
+  .w-btn{
+    display:inline-flex; align-items:center; gap:6px; margin-top:6px;
+    background:var(--ink); color:#fff; font-size:0.82rem; font-weight:600;
+    padding:10px 18px; border-radius:999px;
+  }
+
+  .featured-card{ border:1px solid var(--line); border-radius:12px; overflow:hidden; margin-bottom:16px; display:block; }
+  .featured-card:last-child{ margin-bottom:0; }
+  .fc-prev{ height:100px; display:flex; align-items:center; justify-content:center; }
+  .fc-80s{ background:repeating-linear-gradient(0deg, rgba(0,0,0,0.15) 0 1px, transparent 1px 3px), linear-gradient(160deg, #0c1c12, #163825); }
+  .fc-80s span{ font-family:'IBM Plex Mono', monospace; color:#7cffa0; font-size:0.76rem; }
+  .fc-quiky{ background:linear-gradient(150deg, #efe6ff, #d8cbff 55%, #ffd7e8); gap:8px; }
+  .fc-quiky .ph{ width:30px; height:52px; border-radius:6px; background:#fff; border:2px solid var(--ink); }
+  .fc-quiky .ph.mid{ transform:translateY(-4px) scale(1.08); }
+  .fc-body{ padding:14px 16px; background:rgba(255,255,255,0.5); }
+  .fc-body h4{ margin:0 0 4px; font-size:0.95rem; }
+  .fc-body p{ margin:0; font-size:0.8rem; color:var(--ink-soft); }
+  .fc-tags{ display:flex; gap:6px; margin-top:8px; flex-wrap:wrap; }
+  .fc-tags span{ font-family:'IBM Plex Mono', monospace; font-size:0.62rem; border:1px solid var(--line); padding:2px 8px; border-radius:999px; color:var(--ink-soft); }
+
+  .logo-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(120px,1fr)); gap:12px; }
+  .logo-grid .lb{ background:#fff; border-radius:10px; padding:14px; display:flex; align-items:center; justify-content:center; aspect-ratio:1; border:1px solid var(--line); }
+  .logo-grid img{ max-width:100%; max-height:100%; object-fit:contain; }
+
+  .img-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(96px,1fr)); gap:10px; }
+  .img-grid img{ width:100%; aspect-ratio:1; object-fit:cover; border-radius:8px; border:1px solid var(--line); }
+
+  .link-list{ display:flex; flex-direction:column; gap:2px; }
+  .link-list a{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:12px 4px; border-bottom:1px solid var(--line); font-size:0.9rem; font-weight:500;
+  }
+  .link-list a:last-child{ border-bottom:none; }
+  .link-list a:hover{ color:var(--violet); }
+
+  .mail-field{ margin-bottom:12px; }
+  .mail-field label{ display:block; font-size:0.72rem; color:var(--ink-soft); margin-bottom:5px; font-family:'IBM Plex Mono', monospace; }
+  .mail-field input, .mail-field textarea{
+    width:100%; border:1px solid var(--line); border-radius:8px; padding:9px 11px;
+    font-family:'Inter', sans-serif; font-size:0.88rem; background:rgba(255,255,255,0.6); color:var(--ink);
+  }
+  .mail-field textarea{ resize:vertical; min-height:80px; }
+  .mail-send{
+    width:100%; border:none; border-radius:8px; padding:11px; margin-top:4px;
+    background:linear-gradient(135deg, var(--violet), var(--teal)); color:#fff; font-weight:600; font-size:0.88rem;
+  }
+
+  /* ---------------- DOCK ---------------- */
+  .dock-wrap{ position:fixed; left:0; right:0; bottom:14px; z-index:210; display:flex; justify-content:center; pointer-events:none; }
+  .dock{
+    pointer-events:auto;
+    display:flex; align-items:flex-end; gap:10px;
+    background:rgba(20,20,28,0.55); backdrop-filter:blur(18px);
+    border:1px solid rgba(255,255,255,0.1); border-radius:20px;
+    padding:10px 14px;
+  }
+  .dock-icon{
+    position:relative; width:48px; height:48px; border-radius:13px; border:none;
+    background:rgba(255,255,255,0.08); display:flex; align-items:center; justify-content:center;
+    font-size:1.4rem; transition:transform 0.15s ease; transform-origin:bottom center;
+  }
+  .dock-icon .ind{ position:absolute; bottom:-8px; left:50%; transform:translateX(-50%); width:4px; height:4px; border-radius:50%; background:var(--violet); opacity:0; }
+  .dock-icon.active .ind{ opacity:1; }
+  @media (max-width:760px){
+    .dock-wrap{ bottom:0; }
+    .dock{ width:100%; border-radius:0; justify-content:space-around; padding:10px 8px calc(10px + env(safe-area-inset-bottom)); }
+    .dock-icon{ width:auto; flex:1; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wallpaper" aria-hidden="true">
+  <div class="blob blob-1" id="blob1"></div>
+  <div class="blob blob-2" id="blob2"></div>
+  <div class="blob blob-3" id="blob3"></div>
+  <div class="grain2"></div>
+</div>
+
+<div class="menubar">
+  <div class="mb-left">
+    <div class="mb-brand"><span class="diamond">◆</span> Manjil Aryal</div>
+    <span class="mb-menu" data-open="featured">Work</span>
+    <span class="mb-menu" data-open="contact">Contact</span>
+  </div>
+  <div class="mb-right">
+    <span><span class="dot"></span>I use AI</span>
+    <span class="mono" id="clock">--:--</span>
+  </div>
+</div>
+
+<div class="desktop" id="desktop">
+  <button class="icon" data-open="about"><div class="glyph">◆</div><span>About.txt</span></button>
+  <button class="icon" data-open="featured"><div class="glyph">📁</div><span>Featured</span></button>
+  <button class="icon" data-open="logos"><div class="glyph">📁</div><span>Logos</span></button>
+  <button class="icon" data-open="images"><div class="glyph">📁</div><span>Images</span></button>
+  <button class="icon" data-open="projects"><div class="glyph">🔗</div><span>Projects.url</span></button>
+  <button class="icon" data-open="contact"><div class="glyph">✉️</div><span>Contact.app</span></button>
+</div>
+
+<!-- ===== WINDOWS ===== -->
+<div class="window" id="win-about" data-win data-w="460" data-h="360">
+  <div class="titlebar"><div class="traffic"><span class="t-close" data-close></span><span class="t-min"></span><span class="t-max"></span></div><div class="wtitle mono">About.txt</div></div>
+  <div class="wcontent w-body">
+    <p class="w-tagline">I use AI to design, build, and ship things.</p>
+    <p>Hi, I'm Manjil — a designer and builder who keeps an AI tool in the loop on almost everything: Claude for the web builds, Gemini for the visuals.</p>
+    <p>I don't know what I'm capable of yet — ask me, and maybe I'll be able to help.</p>
+    <button class="w-btn" data-open="contact">Get in touch →</button>
+  </div>
+</div>
+
+<div class="window" id="win-featured" data-win data-w="580" data-h="480">
+  <div class="titlebar"><div class="traffic"><span class="t-close" data-close></span><span class="t-min"></span><span class="t-max"></span></div><div class="wtitle mono">Featured/</div></div>
+  <div class="wcontent">
+    <a class="featured-card" href="https://80snet.vercel.app/" target="_blank" rel="noopener">
+      <div class="fc-prev fc-80s"><span>&gt; search: 1985_</span></div>
+      <div class="fc-body">
+        <h4>80sNet</h4>
+        <p>Retro green-screen terminal search engine, styled like 1985.</p>
+        <div class="fc-tags"><span>Claude</span><span>HTML</span><span>CSS</span><span>JS</span></div>
+      </div>
+    </a>
+    <a class="featured-card" href="https://quiky.vercel.app/" target="_blank" rel="noopener">
+      <div class="fc-prev fc-quiky"><div class="ph"></div><div class="ph mid"></div><div class="ph"></div></div>
+      <div class="fc-body">
+        <h4>Quiky</h4>
+        <p>Social media mockup generator — no login, no watermark.</p>
+        <div class="fc-tags"><span>Claude</span><span>HTML</span><span>CSS</span><span>JS</span></div>
+      </div>
+    </a>
+  </div>
+</div>
+
+<div class="window" id="win-logos" data-win data-w="520" data-h="420">
+  <div class="titlebar"><div class="traffic"><span class="t-close" data-close></span><span class="t-min"></span><span class="t-max"></span></div><div class="wtitle mono">Logos/</div></div>
+  <div class="wcontent">
+    <div class="logo-grid">
+      <div class="lb"><img src="quky.jpg" alt="Quiky logo" loading="lazy"></div>
+      <div class="lb"><img src="conceptgate.jpg" alt="Conceptgate logo" loading="lazy"></div>
+      <div class="lb"><img src="botan.jpg" alt="Botan logo" loading="lazy"></div>
+    </div>
+  </div>
+</div>
+
+<div class="window" id="win-images" data-win data-w="560" data-h="460">
+  <div class="titlebar"><div class="traffic"><span class="t-close" data-close></span><span class="t-min"></span><span class="t-max"></span></div><div class="wtitle mono">Images/</div></div>
+  <div class="wcontent">
+    <div class="img-grid">
+      <img src="quiky-1.png" alt="Quiky generated visual" loading="lazy">
+      <img src="allocation.jpg" alt="Allocation generated visual" loading="lazy">
+      <img src="ecnomicsystem.jpg" alt="Economic system generated visual" loading="lazy">
+      <img src="quiky1.jpg" alt="Quiky generated visual" loading="lazy">
+      <img src="quiky2.jpg" alt="Quiky generated visual" loading="lazy">
+      <img src="ppc.jpg" alt="PPC generated visual" loading="lazy">
+      <img src="multistep.jpg" alt="Multistep generated visual" loading="lazy">
+      <img src="multistepsoln.jpg" alt="Multistep solution generated visual" loading="lazy">
+      <img src="it.jpg" alt="IT generated visual" loading="lazy">
+      <img src="eco.jpg" alt="Eco generated visual" loading="lazy">
+      <img src="dflbr.jpg" alt="Dflbr generated visual" loading="lazy">
+    </div>
+  </div>
+</div>
+
+<div class="window" id="win-projects" data-win data-w="420" data-h="420">
+  <div class="titlebar"><div class="traffic"><span class="t-close" data-close></span><span class="t-min"></span><span class="t-max"></span></div><div class="wtitle mono">Projects.url</div></div>
+  <div class="wcontent">
+    <div class="link-list">
+      <a href="https://manjilaryal546.github.io/collection-of-films/" target="_blank" rel="noopener">FILMs <span>↗</span></a>
+      <a href="https://manjilaryal.github.io/MQP/" target="_blank" rel="noopener">MCQ <span>↗</span></a>
+      <a href="https://manjilaryal.github.io/SquidGame/" target="_blank" rel="noopener">Invitation <span>↗</span></a>
+      <a href="https://manjilaryal.github.io/IMDc/" target="_blank" rel="noopener">IMDc <span>↗</span></a>
+      <a href="https://manjilaryal.github.io/biralo/" target="_blank" rel="noopener">Biralo <span>↗</span></a>
+      <a href="https://manjilaryal.github.io/Earn-Money/" target="_blank" rel="noopener">Quiz <span>↗</span></a>
+      <a href="https://manjilaryal.github.io/Discover-Cats/" target="_blank" rel="noopener">Cats <span>↗</span></a>
+    </div>
+  </div>
+</div>
+
+<div class="window" id="win-contact" data-win data-w="420" data-h="440">
+  <div class="titlebar"><div class="traffic"><span class="t-close" data-close></span><span class="t-min"></span><span class="t-max"></span></div><div class="wtitle mono">Contact.app</div></div>
+  <div class="wcontent">
+    <div class="mail-field"><label>To</label><input type="text" value="manjilaryal11@gmail.com" readonly></div>
+    <div class="mail-field"><label>Subject</label><input type="text" id="mailSubject" placeholder="Let's build something"></div>
+    <div class="mail-field"><label>Message</label><textarea id="mailBody" placeholder="I don't know what I need yet, but…"></textarea></div>
+    <button class="mail-send" id="mailSend">Send →</button>
+  </div>
+</div>
+
+<div class="dock-wrap">
+  <div class="dock" id="dock">
+    <button class="dock-icon" data-open="about" title="About.txt">◆<span class="ind"></span></button>
+    <button class="dock-icon" data-open="featured" title="Featured">📁<span class="ind"></span></button>
+    <button class="dock-icon" data-open="logos" title="Logos">🖼️<span class="ind"></span></button>
+    <button class="dock-icon" data-open="images" title="Images">🎨<span class="ind"></span></button>
+    <button class="dock-icon" data-open="projects" title="Projects">🔗<span class="ind"></span></button>
+    <button class="dock-icon" data-open="contact" title="Contact">✉️<span class="ind"></span></button>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script>
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function isMobile(){ return window.innerWidth < 760; }
+
+  /* ---------------- CLOCK ---------------- */
+  var clockEl = document.getElementById('clock');
+  function tickClock(){
+    var d = new Date();
+    var h = d.getHours(); var m = d.getMinutes();
+    var ap = h >= 12 ? 'PM' : 'AM';
+    var h12 = h % 12; if (h12 === 0) h12 = 12;
+    clockEl.textContent = h12 + ':' + (m < 10 ? '0' + m : m) + ' ' + ap;
+  }
+  tickClock(); setInterval(tickClock, 15000);
+
+  /* ---------------- WALLPAPER DRIFT ---------------- */
+  if (window.gsap && !reduceMotion){
+    gsap.to('#blob1', { x: 60, y: 40, duration: 14, ease: 'sine.inOut', repeat: -1, yoyo: true });
+    gsap.to('#blob2', { x: -50, y: -30, duration: 17, ease: 'sine.inOut', repeat: -1, yoyo: true });
+    gsap.to('#blob3', { x: 40, y: -50, duration: 12, ease: 'sine.inOut', repeat: -1, yoyo: true });
+  }
+
+  /* ---------------- WINDOW MANAGER ---------------- */
+  var topZ = 20;
+  var windows = {};
+  document.querySelectorAll('.window[data-win]').forEach(function(w){
+    var id = w.id.replace('win-', '');
+    windows[id] = w;
+  });
+
+  function layoutWindow(w){
+    if (isMobile()) return;
+    var wpx = parseInt(w.dataset.w, 10);
+    var hpx = parseInt(w.dataset.h, 10);
+    var vw = window.innerWidth, vh = window.innerHeight;
+    var idx = Object.keys(windows).indexOf(w.id.replace('win-', ''));
+    var left = Math.max(24, (vw - wpx) / 2 - 90 + idx * 26);
+    var top = Math.max(56, (vh - hpx) / 2 - 30 + idx * 20);
+    w.style.width = wpx + 'px';
+    w.style.height = hpx + 'px';
+    w.style.left = left + 'px';
+    w.style.top = top + 'px';
+  }
+  Object.keys(windows).forEach(function(id){ layoutWindow(windows[id]); });
+  window.addEventListener('resize', function(){ Object.keys(windows).forEach(function(id){ layoutWindow(windows[id]); }); });
+
+  function bringToFront(w){ topZ++; w.style.zIndex = topZ; }
+
+  function setDockActive(id, on){
+    var dockBtn = document.querySelector('.dock-icon[data-open="' + id + '"]');
+    if (dockBtn) dockBtn.classList.toggle('active', on);
+  }
+
+  function openWindow(id){
+    var w = windows[id];
+    if (!w) return;
+    var wasOpen = w.classList.contains('open');
+    w.classList.add('open');
+    bringToFront(w);
+    setDockActive(id, true);
+    if (!wasOpen && window.gsap && !reduceMotion){
+      gsap.fromTo(w, { autoAlpha: 0, scale: 0.9, y: 16 }, { autoAlpha: 1, scale: 1, y: 0, duration: 0.35, ease: 'back.out(1.6)' });
+    }
+  }
+
+  function closeWindow(w){
+    var id = w.id.replace('win-', '');
+    if (window.gsap && !reduceMotion){
+      gsap.to(w, { autoAlpha: 0, scale: 0.92, y: 10, duration: 0.2, ease: 'power2.in', onComplete: function(){ w.classList.remove('open'); gsap.set(w, { clearProps: 'opacity,transform' }); } });
+    } else {
+      w.classList.remove('open');
+    }
+    setDockActive(id, false);
+  }
+
+  function toggleWindow(id){
+    var w = windows[id];
+    if (!w) return;
+    if (w.classList.contains('open')) { closeWindow(w); }
+    else { openWindow(id); }
+  }
+
+  /* dock + desktop icons: click again to close */
+  document.querySelectorAll('.dock-icon[data-open], .icon[data-open]').forEach(function(el){
+    el.addEventListener('click', function(){ toggleWindow(el.dataset.open); });
+  });
+  /* menu bar items and in-window buttons (e.g. "Get in touch"): always open/focus, never close */
+  document.querySelectorAll('.mb-menu[data-open], .w-btn[data-open]').forEach(function(el){
+    el.addEventListener('click', function(){ openWindow(el.dataset.open); });
+  });
+  document.querySelectorAll('[data-close]').forEach(function(el){
+    el.addEventListener('click', function(e){
+      e.stopPropagation();
+      closeWindow(el.closest('.window'));
+    });
+  });
+  document.querySelectorAll('.window').forEach(function(w){
+    w.addEventListener('pointerdown', function(){ bringToFront(w); });
+  });
+
+  /* Escape closes the frontmost open window */
+  document.addEventListener('keydown', function(e){
+    if (e.key !== 'Escape') return;
+    var openWins = Array.prototype.filter.call(document.querySelectorAll('.window.open'), function(w){ return true; });
+    if (!openWins.length) return;
+    openWins.sort(function(a, b){ return (parseInt(b.style.zIndex, 10) || 0) - (parseInt(a.style.zIndex, 10) || 0); });
+    closeWindow(openWins[0]);
+  });
+
+  /* ---------------- DRAGGING (desktop only) ---------------- */
+  document.querySelectorAll('.titlebar').forEach(function(bar){
+    var w = bar.closest('.window');
+    var dragging = false, startX, startY, startLeft, startTop;
+    bar.addEventListener('pointerdown', function(e){
+      if (isMobile()) return;
+      if (e.target.closest('.traffic')) return;
+      dragging = true;
+      startX = e.clientX; startY = e.clientY;
+      startLeft = parseInt(w.style.left, 10) || 0;
+      startTop = parseInt(w.style.top, 10) || 0;
+      bar.setPointerCapture(e.pointerId);
+      bringToFront(w);
+    });
+    bar.addEventListener('pointermove', function(e){
+      if (!dragging) return;
+      var nl = startLeft + (e.clientX - startX);
+      var nt = Math.max(38, startTop + (e.clientY - startY));
+      w.style.left = nl + 'px';
+      w.style.top = nt + 'px';
+    });
+    bar.addEventListener('pointerup', function(){ dragging = false; });
+    bar.addEventListener('pointercancel', function(){ dragging = false; });
+  });
+
+  /* ---------------- DOCK MAGNIFICATION ---------------- */
+  var dock = document.getElementById('dock');
+  if (!isMobile() && !reduceMotion){
+    dock.addEventListener('mousemove', function(e){
+      var icons = dock.querySelectorAll('.dock-icon');
+      icons.forEach(function(icon){
+        var r = icon.getBoundingClientRect();
+        var cx = r.left + r.width / 2;
+        var dist = Math.abs(e.clientX - cx);
+        var scale = Math.max(1, 1.55 - dist / 130);
+        icon.style.transform = 'scale(' + scale + ') translateY(' + (-(scale - 1) * 10) + 'px)';
+      });
+    });
+    dock.addEventListener('mouseleave', function(){
+      dock.querySelectorAll('.dock-icon').forEach(function(icon){ icon.style.transform = 'scale(1)'; });
+    });
+  }
+
+  /* ---------------- MAIL FORM ---------------- */
+  document.getElementById('mailSend').addEventListener('click', function(){
+    var subject = document.getElementById('mailSubject').value.trim() || "Let's build something";
+    var body = document.getElementById('mailBody').value.trim() || "Hey Manjil,";
+    window.location.href = 'mailto:manjilaryal11@gmail.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+  });
+
+  /* ---------------- AUTO-OPEN ABOUT ---------------- */
+  setTimeout(function(){ openWindow('about'); }, reduceMotion ? 0 : 260);
+</script>
+
+</body>
+</html>

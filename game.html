@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manjil Aryal — I use AI</title>
+<meta name="description" content="Manjil Aryal — designer & builder who ships with AI in the loop. Character sheet, quests, and inventory.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0b0d17; --panel:#141726; --panel-2:#1b1f33;
+    --ink:#e9eaf5; --ink-soft:#9497b8;
+    --cyan:#33e6ff; --magenta:#ff3d9a; --gold:#ffcc33; --green:#39ff9c; --purple:#a76bff;
+    --border:#3a3f5c;
+    font-size:16px;
+  }
+  *{ box-sizing:border-box; }
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:'Inter', sans-serif; line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    background-image: radial-gradient(rgba(255,255,255,0.035) 1px, transparent 1px);
+    background-size:24px 24px;
+  }
+  a{ color:inherit; text-decoration:none; }
+  .pixel{ font-family:'Press Start 2P', monospace; }
+
+  .panel{
+    background:var(--panel); border:3px solid var(--border);
+    box-shadow:5px 5px 0 rgba(0,0,0,0.55);
+  }
+
+  /* ---------------- HUD ---------------- */
+  .hud{
+    position:sticky; top:0; z-index:100;
+    background:rgba(11,13,23,0.92); border-bottom:3px solid var(--border);
+  }
+  .hud-row{ max-width:1080px; margin:0 auto; display:flex; align-items:center; gap:14px; padding:10px 20px; }
+  .hud-avatar{
+    width:38px; height:38px; flex-shrink:0; background:linear-gradient(135deg, var(--cyan), var(--purple));
+    border:2px solid #fff; display:flex; align-items:center; justify-content:center;
+    font-weight:800; font-family:'Press Start 2P', monospace; font-size:0.8rem; color:#0b0d17;
+  }
+  .hud-name{ font-size:0.82rem; font-weight:700; }
+  .hud-level{ font-size:0.68rem; color:var(--gold); font-family:'Press Start 2P', monospace; }
+  .hud-xp{ flex:1; }
+  .hud-xp-label{ font-size:0.6rem; color:var(--ink-soft); font-family:'Press Start 2P', monospace; margin-bottom:4px; }
+  .xp-track{ height:10px; background:#05060b; border:2px solid var(--border); position:relative; overflow:hidden; }
+  .xp-fill{ height:100%; width:0%; background:linear-gradient(90deg, var(--cyan), var(--magenta)); transition:width 0.15s linear; }
+  .hud-cta{
+    font-family:'Press Start 2P', monospace; font-size:0.6rem; color:var(--ink);
+    border:2px solid var(--border); padding:9px 12px; white-space:nowrap; flex-shrink:0;
+    background:var(--panel-2);
+  }
+  .hud-cta:hover{ border-color:var(--cyan); color:var(--cyan); }
+  @media (max-width:640px){ .hud-name{ display:none; } .hud-cta{ font-size:0.55rem; padding:8px 9px; } }
+
+  main{ max-width:1080px; margin:0 auto; padding:56px 20px 100px; }
+  section{ margin-bottom:96px; }
+  .sec-label{
+    font-family:'Press Start 2P', monospace; font-size:0.85rem; color:var(--gold);
+    margin-bottom:28px; display:flex; align-items:center; gap:10px;
+  }
+  .sec-label::before{ content:'▸'; color:var(--cyan); }
+
+  /* ---------------- DIALOGUE ---------------- */
+  .dialogue-wrap{ position:relative; max-width:640px; }
+  .dialogue-box{
+    padding:26px 28px 30px; position:relative;
+  }
+  .dialogue-box[hidden]{ display:none; }
+  .dlg-name{ font-size:0.7rem; color:var(--cyan); margin-bottom:14px; }
+  .dlg-text{ font-size:1.05rem; min-height:3.4em; margin:0; }
+  .dlg-next{
+    display:none; position:absolute; right:20px; bottom:14px; color:var(--gold);
+    animation:blinkArrow 1s steps(2) infinite;
+  }
+  @keyframes blinkArrow{ 50%{ opacity:0; } }
+  .dlg-hint{ margin-top:14px; font-size:0.7rem; color:var(--ink-soft); font-family:'Press Start 2P', monospace; opacity:0; transition:opacity .4s ease; }
+  .dlg-hint.show{ opacity:1; }
+
+  /* ---------------- SKILLS ---------------- */
+  .skills{ display:flex; flex-direction:column; gap:16px; max-width:560px; }
+  .skill-row{ display:flex; align-items:center; gap:14px; }
+  .skill-name{ width:110px; flex-shrink:0; font-size:0.85rem; font-weight:600; }
+  .skill-track{ flex:1; height:14px; background:#05060b; border:2px solid var(--border); overflow:hidden; }
+  .skill-fill{ height:100%; width:0%; background:repeating-linear-gradient(90deg, var(--green) 0 8px, #1fae6f 8px 10px); transition:width 1.1s cubic-bezier(.22,.9,.3,1); }
+  .skill-pct{ width:38px; flex-shrink:0; font-size:0.72rem; color:var(--ink-soft); text-align:right; }
+
+  /* ---------------- QUESTS (featured) ---------------- */
+  .quest-grid{ display:grid; grid-template-columns:1fr 1fr; gap:22px; }
+  @media (max-width:700px){ .quest-grid{ grid-template-columns:1fr; } }
+  .quest-card{ display:block; position:relative; overflow:hidden; }
+  .rarity{
+    position:absolute; top:10px; right:10px; z-index:2;
+    font-family:'Press Start 2P', monospace; font-size:0.55rem; padding:5px 8px;
+    background:#05060b; border:2px solid currentColor;
+  }
+  .rarity.epic{ color:var(--purple); }
+  .rarity.rare{ color:var(--green); }
+  .quest-shot{ height:150px; display:flex; align-items:center; justify-content:center; border-bottom:3px solid var(--border); }
+  .q-80s{ background:repeating-linear-gradient(0deg, rgba(0,0,0,0.25) 0 1px, transparent 1px 3px), linear-gradient(160deg, #061a0f, #0f3020); }
+  .q-80s span{ font-family:'Press Start 2P', monospace; color:#39ff9c; font-size:0.6rem; }
+  .q-quiky{ background:linear-gradient(150deg, #2a1f52, #3e2c78 55%, #582e5f); gap:8px; }
+  .q-quiky .ph{ width:26px; height:46px; border-radius:4px; background:rgba(255,255,255,0.08); border:2px solid #fff; }
+  .q-quiky .ph.mid{ transform:translateY(-4px) scale(1.08); }
+  .quest-body{ padding:16px 18px 20px; }
+  .quest-body h3{ margin:0 0 8px; font-size:1.1rem; }
+  .quest-body p{ margin:0; font-size:0.85rem; color:var(--ink-soft); }
+  .quest-tags{ display:flex; gap:6px; flex-wrap:wrap; margin-top:12px; }
+  .quest-tags span{ font-family:'Press Start 2P', monospace; font-size:0.52rem; border:2px solid var(--border); padding:4px 7px; color:var(--ink-soft); }
+  .quest-play{ display:inline-block; margin-top:16px; font-family:'Press Start 2P', monospace; font-size:0.62rem; color:var(--bg); background:var(--gold); padding:9px 14px; }
+  .quest-card:hover .quest-play{ background:var(--cyan); }
+
+  /* ---------------- INVENTORY ---------------- */
+  .inv-sub{ font-size:0.78rem; color:var(--ink-soft); margin:26px 0 12px; font-family:'Press Start 2P', monospace; }
+  .inv-sub:first-child{ margin-top:0; }
+  .inv-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(90px,1fr)); gap:10px; }
+  .inv-slot{
+    aspect-ratio:1; background:var(--panel-2); border:2px solid var(--border);
+    display:flex; align-items:center; justify-content:center; padding:8px;
+    transition:border-color .18s ease, transform .18s ease;
+  }
+  .inv-slot:hover{ border-color:var(--cyan); transform:translateY(-3px); }
+  .inv-slot img{ max-width:100%; max-height:100%; object-fit:contain; }
+  .inv-grid.photos .inv-slot img{ object-fit:cover; width:100%; height:100%; }
+
+  /* ---------------- QUEST LOG ---------------- */
+  .questlog-panel{ padding:6px 22px; }
+  .ql-row{
+    display:flex; align-items:center; justify-content:space-between; gap:14px;
+    padding:16px 0; border-bottom:2px dashed var(--border);
+  }
+  .ql-row:last-child{ border-bottom:none; }
+  .ql-left{ display:flex; align-items:center; gap:12px; }
+  .ql-check{ color:var(--green); font-family:'Press Start 2P', monospace; font-size:0.7rem; }
+  .ql-name{ font-weight:600; font-size:0.92rem; }
+  .ql-go{ font-family:'Press Start 2P', monospace; font-size:0.6rem; color:var(--ink-soft); flex-shrink:0; }
+  .ql-row:hover .ql-go{ color:var(--cyan); }
+
+  /* ---------------- NEW QUEST (contact) ---------------- */
+  .newquest{ padding:30px 28px 34px; max-width:520px; }
+  .nq-field{ margin-bottom:16px; }
+  .nq-field label{ display:block; font-family:'Press Start 2P', monospace; font-size:0.6rem; color:var(--gold); margin-bottom:8px; }
+  .nq-field input, .nq-field textarea{
+    width:100%; background:#05060b; border:2px solid var(--border); color:var(--ink);
+    padding:11px 12px; font-family:'Inter', sans-serif; font-size:0.9rem;
+  }
+  .nq-field input:focus, .nq-field textarea:focus{ outline:none; border-color:var(--cyan); }
+  .nq-field textarea{ min-height:90px; resize:vertical; }
+  .nq-send{
+    width:100%; border:none; padding:14px; margin-top:6px;
+    font-family:'Press Start 2P', monospace; font-size:0.72rem; color:var(--bg);
+    background:linear-gradient(90deg, var(--gold), var(--magenta));
+  }
+  .nq-send:hover{ filter:brightness(1.08); }
+
+  footer{ text-align:center; padding:30px; font-family:'Press Start 2P', monospace; font-size:0.55rem; color:var(--ink-soft); }
+
+  /* ---------------- TOAST ---------------- */
+  .toast{
+    position:fixed; left:50%; bottom:26px; transform:translate(-50%, 20px);
+    background:var(--panel); border:3px solid var(--gold); box-shadow:5px 5px 0 rgba(0,0,0,0.55);
+    padding:14px 20px; font-family:'Press Start 2P', monospace; font-size:0.62rem; color:var(--gold);
+    z-index:300; opacity:0; pointer-events:none; transition:opacity .35s ease, transform .35s ease;
+  }
+  .toast.show{ opacity:1; transform:translate(-50%, 0); }
+
+  [data-reveal]{ opacity:0; transform:translateY(18px); transition:opacity .6s ease, transform .6s ease; }
+  [data-reveal].in{ opacity:1; transform:translateY(0); }
+</style>
+</head>
+<body>
+
+<div class="hud">
+  <div class="hud-row">
+    <div class="hud-avatar">M</div>
+    <div>
+      <div class="hud-name">MANJIL ARYAL</div>
+      <div class="hud-level" id="hudLevel">LV.1 BUILDER</div>
+    </div>
+    <div class="hud-xp">
+      <div class="hud-xp-label">XP</div>
+      <div class="xp-track"><div class="xp-fill" id="xpFill"></div></div>
+    </div>
+    <a class="hud-cta" href="#questlog">📜 QUESTS</a>
+  </div>
+</div>
+
+<main>
+
+  <section id="hero">
+    <div class="dialogue-wrap">
+      <div class="dialogue-box panel" id="dlg1">
+        <div class="dlg-name pixel">MANJIL</div>
+        <p class="dlg-text" id="dlgText1"></p>
+        <div class="dlg-next" id="dlgNext1">▼</div>
+      </div>
+      <div class="dialogue-box panel" id="dlg2" hidden>
+        <div class="dlg-name pixel">MANJIL</div>
+        <p class="dlg-text" id="dlgText2"></p>
+      </div>
+      <div class="dlg-hint pixel" id="dlgHint">↓ SCROLL TO CONTINUE</div>
+    </div>
+  </section>
+
+  <section id="skills">
+    <div class="sec-label">SKILL TREE</div>
+    <div class="skills">
+      <div class="skill-row" data-reveal><div class="skill-name">Claude</div><div class="skill-track"><div class="skill-fill" data-pct="92"></div></div><div class="skill-pct">92%</div></div>
+      <div class="skill-row" data-reveal><div class="skill-name">Gemini</div><div class="skill-track"><div class="skill-fill" data-pct="88"></div></div><div class="skill-pct">88%</div></div>
+      <div class="skill-row" data-reveal><div class="skill-name">HTML/CSS</div><div class="skill-track"><div class="skill-fill" data-pct="90"></div></div><div class="skill-pct">90%</div></div>
+      <div class="skill-row" data-reveal><div class="skill-name">JavaScript</div><div class="skill-track"><div class="skill-fill" data-pct="82"></div></div><div class="skill-pct">82%</div></div>
+      <div class="skill-row" data-reveal><div class="skill-name">Illustrator</div><div class="skill-track"><div class="skill-fill" data-pct="76"></div></div><div class="skill-pct">76%</div></div>
+    </div>
+  </section>
+
+  <section id="quests">
+    <div class="sec-label">FEATURED QUESTS</div>
+    <div class="quest-grid">
+      <a class="quest-card panel" data-reveal href="https://80snet.vercel.app/" target="_blank" rel="noopener">
+        <div class="rarity rare">★ RARE</div>
+        <div class="quest-shot q-80s"><span>&gt; SEARCH: 1985_</span></div>
+        <div class="quest-body">
+          <h3>80sNet</h3>
+          <p>A retro green-screen terminal search engine, styled like it's 1985.</p>
+          <div class="quest-tags"><span>CLAUDE</span><span>JS</span></div>
+          <div class="quest-play">▶ START QUEST</div>
+        </div>
+      </a>
+      <a class="quest-card panel" data-reveal href="https://quiky.vercel.app/" target="_blank" rel="noopener">
+        <div class="rarity epic">★ EPIC</div>
+        <div class="quest-shot q-quiky"><div class="ph"></div><div class="ph mid"></div><div class="ph"></div></div>
+        <div class="quest-body">
+          <h3>Quiky</h3>
+          <p>Free social media mockup generator — no login, no watermark.</p>
+          <div class="quest-tags"><span>CLAUDE</span><span>JS</span></div>
+          <div class="quest-play">▶ START QUEST</div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <section id="inventory">
+    <div class="sec-label">INVENTORY</div>
+    <div class="inv-sub">// LOGOS</div>
+    <div class="inv-grid" data-reveal>
+      <div class="inv-slot"><img src="quky.jpg" alt="Quiky logo" loading="lazy" title="Quiky logo"></div>
+      <div class="inv-slot"><img src="conceptgate.jpg" alt="Conceptgate logo" loading="lazy" title="Conceptgate logo"></div>
+      <div class="inv-slot"><img src="botan.jpg" alt="Botan logo" loading="lazy" title="Botan logo"></div>
+    </div>
+    <div class="inv-sub">// GENERATED ART</div>
+    <div class="inv-grid photos" data-reveal>
+      <div class="inv-slot"><img src="quiky-1.png" alt="Quiky generated visual" loading="lazy"></div>
+      <div class="inv-slot"><img src="allocation.jpg" alt="Allocation generated visual" loading="lazy"></div>
+      <div class="inv-slot"><img src="ecnomicsystem.jpg" alt="Economic system generated visual" loading="lazy"></div>
+      <div class="inv-slot"><img src="quiky1.jpg" alt="Quiky generated visual" loading="lazy"></div>
+      <div class="inv-slot"><img src="quiky2.jpg" alt="Quiky generated visual" loading="lazy"></div>
+      <div class="inv-slot"><img src="ppc.jpg" alt="PPC generated visual" loading="lazy"></div>
+      <div class="inv-slot"><img src="multistep.jpg" alt="Multistep generated visual" loading="lazy"></div>
+      <div class="inv-slot"><img src="multistepsoln.jpg" alt="Multistep solution generated visual" loading="lazy"></div>
+      <div class="inv-slot"><img src="it.jpg" alt="IT generated visual" loading="lazy"></div>
+      <div class="inv-slot"><img src="eco.jpg" alt="Eco generated visual" loading="lazy"></div>
+      <div class="inv-slot"><img src="dflbr.jpg" alt="Dflbr generated visual" loading="lazy"></div>
+    </div>
+  </section>
+
+  <section id="questlog">
+    <div class="sec-label">QUEST LOG</div>
+    <div class="questlog-panel panel">
+      <a class="ql-row" href="https://manjilaryal546.github.io/collection-of-films/" target="_blank" rel="noopener"><div class="ql-left"><span class="ql-check">✔</span><span class="ql-name">FILMs</span></div><span class="ql-go">[ENTER]</span></a>
+      <a class="ql-row" href="https://manjilaryal.github.io/MQP/" target="_blank" rel="noopener"><div class="ql-left"><span class="ql-check">✔</span><span class="ql-name">MCQ</span></div><span class="ql-go">[ENTER]</span></a>
+      <a class="ql-row" href="https://manjilaryal.github.io/SquidGame/" target="_blank" rel="noopener"><div class="ql-left"><span class="ql-check">✔</span><span class="ql-name">Invitation</span></div><span class="ql-go">[ENTER]</span></a>
+      <a class="ql-row" href="https://manjilaryal.github.io/IMDc/" target="_blank" rel="noopener"><div class="ql-left"><span class="ql-check">✔</span><span class="ql-name">IMDc</span></div><span class="ql-go">[ENTER]</span></a>
+      <a class="ql-row" href="https://manjilaryal.github.io/biralo/" target="_blank" rel="noopener"><div class="ql-left"><span class="ql-check">✔</span><span class="ql-name">Biralo</span></div><span class="ql-go">[ENTER]</span></a>
+      <a class="ql-row" href="https://manjilaryal.github.io/Earn-Money/" target="_blank" rel="noopener"><div class="ql-left"><span class="ql-check">✔</span><span class="ql-name">Quiz</span></div><span class="ql-go">[ENTER]</span></a>
+      <a class="ql-row" href="https://manjilaryal.github.io/Discover-Cats/" target="_blank" rel="noopener"><div class="ql-left"><span class="ql-check">✔</span><span class="ql-name">Cats</span></div><span class="ql-go">[ENTER]</span></a>
+    </div>
+  </section>
+
+  <section id="newquest">
+    <div class="sec-label">START A NEW QUEST</div>
+    <div class="newquest panel">
+      <div class="nq-field"><label>QUEST TITLE</label><input type="text" id="nqSubject" placeholder="Let's build something"></div>
+      <div class="nq-field"><label>QUEST DETAILS</label><textarea id="nqBody" placeholder="I don't know what I need yet, but…"></textarea></div>
+      <button class="nq-send" id="nqSend">⚔ SEND SCROLL</button>
+    </div>
+  </section>
+
+</main>
+
+<footer>PRESS START — BUILT WITH AI IN THE LOOP</footer>
+
+<div class="toast" id="toast">🏆 ACHIEVEMENT UNLOCKED — MADE IT TO THE END</div>
+
+<script>
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------------- XP BAR + LEVEL ---------------- */
+  var xpFill = document.getElementById('xpFill');
+  var hudLevel = document.getElementById('hudLevel');
+  function updateXP(){
+    var h = document.documentElement;
+    var scrollable = h.scrollHeight - h.clientHeight;
+    var pct = scrollable > 0 ? Math.min(100, Math.max(0, (window.scrollY / scrollable) * 100)) : 0;
+    xpFill.style.width = pct + '%';
+    var lvl = 1 + Math.floor(pct / 20);
+    hudLevel.textContent = 'LV.' + lvl + ' BUILDER';
+  }
+  updateXP();
+  window.addEventListener('scroll', updateXP, { passive: true });
+  window.addEventListener('resize', updateXP);
+
+  /* ---------------- DIALOGUE SEQUENCE ---------------- */
+  var text1 = "I use AI to design, build, and ship things.";
+  var text2 = "I don't know what I'm capable of yet — ask me, and maybe I'll be able to help.";
+  var dlgText1 = document.getElementById('dlgText1');
+  var dlgText2 = document.getElementById('dlgText2');
+  var dlg1 = document.getElementById('dlg1');
+  var dlg2 = document.getElementById('dlg2');
+  var dlgNext1 = document.getElementById('dlgNext1');
+  var dlgHint = document.getElementById('dlgHint');
+
+  function typeText(el, str, cb){
+    if (reduceMotion){ el.textContent = str; if (cb) cb(); return; }
+    var i = 0;
+    (function step(){
+      i++;
+      el.textContent = str.slice(0, i);
+      if (i < str.length){ setTimeout(step, 26); } else if (cb){ cb(); }
+    })();
+  }
+
+  typeText(dlgText1, text1, function(){
+    dlgNext1.style.display = 'block';
+  });
+
+  function advanceDialogue(){
+    dlg1.hidden = true;
+    dlg2.hidden = false;
+    typeText(dlgText2, text2, function(){
+      dlgHint.classList.add('show');
+    });
+  }
+  dlg1.addEventListener('click', advanceDialogue);
+
+  /* ---------------- SKILL BARS + CARD REVEAL ---------------- */
+  var revealEls = document.querySelectorAll('[data-reveal]');
+  if ('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('in');
+        var bars = entry.target.querySelectorAll ? entry.target.querySelectorAll('.skill-fill') : [];
+        bars.forEach(function(b){ b.style.width = b.dataset.pct + '%'; });
+        io.unobserve(entry.target);
+      });
+    }, { threshold: 0.25 });
+    revealEls.forEach(function(el){ io.observe(el); });
+  } else {
+    revealEls.forEach(function(el){
+      el.classList.add('in');
+      el.querySelectorAll('.skill-fill').forEach(function(b){ b.style.width = b.dataset.pct + '%'; });
+    });
+  }
+
+  /* ---------------- ACHIEVEMENT TOAST ---------------- */
+  var toast = document.getElementById('toast');
+  var newQuestSec = document.getElementById('newquest');
+  var toastShown = false;
+  if ('IntersectionObserver' in window){
+    var io2 = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if (entry.isIntersecting && !toastShown){
+          toastShown = true;
+          toast.classList.add('show');
+          setTimeout(function(){ toast.classList.remove('show'); }, 3200);
+          io2.disconnect();
+        }
+      });
+    }, { threshold: 0.4 });
+    io2.observe(newQuestSec);
+  }
+
+  /* ---------------- NEW QUEST FORM ---------------- */
+  document.getElementById('nqSend').addEventListener('click', function(){
+    var subject = document.getElementById('nqSubject').value.trim() || "Let's build something";
+    var body = document.getElementById('nqBody').value.trim() || "Hey Manjil,";
+    window.location.href = 'mailto:manjilaryal11@gmail.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+  });
+</script>
+
+</body>
+</html>

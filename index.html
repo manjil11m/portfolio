@@ -3,510 +3,180 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Manjil Aryal — I use AI</title>
-<meta name="description" content="Manjil Aryal — designer & builder who ships with AI in the loop. Ask me anything.">
+<title>Manjil Aryal — Select Your Experience</title>
+<meta name="description" content="Manjil Aryal — designer & builder who ships with AI in the loop. Four portfolios, one builder. Pick your mode.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Monoton&family=Press+Start+2P&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-    :root{
-    --bg:#0b0c10;
-    --bg-2:#111219;
-    --panel:#15161d;
-    --bubble-a:#1b1d24;
-    --bubble-a-border: rgba(255,255,255,0.07);
-    --text:#edeef2;
-    --text-soft:#9a9bb0;
-    --text-faint:#5c5d6f;
-    --violet:#7c6cff;
-    --blue:#4f8cff;
-    --green:#3ed598;
-    --line: rgba(255,255,255,0.09);
+  :root{
+    --bg-1:#0a0714; --bg-2:#150a24; --bg-3:#080611;
+    --ink:#f0eef9; --ink-soft:#9691b5;
+    --msg-a:#7c6cff; --msg-b:#4f8cff;
+    --os-a:#7c6cff; --os-b:#22d3c0;
+    --game-a:#33e6ff; --game-b:#ff3d9a;
+    --cork-a:#d8453b; --cork-b:#d99a2b;
     font-size:16px;
   }
   *{ box-sizing:border-box; }
-  html{ scroll-behavior:smooth; }
-  @media (prefers-reduced-motion: reduce){ html{ scroll-behavior:auto; } }
-
   body{
-    margin:0; background:var(--bg); color:var(--text);
-    font-family:'Inter', sans-serif; line-height:1.5;
-    -webkit-font-smoothing:antialiased;
+    margin:0; min-height:100vh; background:radial-gradient(circle at 50% 20%, var(--bg-2), var(--bg-1) 55%, var(--bg-3));
+    color:var(--ink); font-family:'Inter', sans-serif; -webkit-font-smoothing:antialiased;
+    display:flex; flex-direction:column; align-items:center;
+    overflow-x:hidden;
   }
-  body.has-cursor, body.has-cursor a, body.has-cursor button{ cursor:none; }
-  ::selection{ background:var(--violet); color:#fff; }
-  a{ color:inherit; text-decoration:none; }
-  .mono{ font-family:'IBM Plex Mono', monospace; }
+  a, button{ color:inherit; text-decoration:none; font-family:inherit; }
+  .pixel{ font-family:'Press Start 2P', monospace; }
+  .marquee{ font-family:'Monoton', cursive; }
 
-  .cursor-dot, .cursor-ring{ position:fixed; top:0; left:0; pointer-events:none; z-index:300; transform:translate(-50%,-50%); opacity:0; }
-  .cursor-dot{ width:7px; height:7px; border-radius:50%; background:var(--violet); }
-  .cursor-ring{ width:30px; height:30px; border-radius:50%; border:1.5px solid rgba(255,255,255,0.35); transition:width .25s, height .25s, border-color .25s, background .25s; }
-  body.has-cursor .cursor-dot, body.has-cursor .cursor-ring{ opacity:1; }
-  .cursor-ring.hovering{ width:50px; height:50px; background:rgba(124,108,255,0.15); border-color:var(--violet); }
+  .scanlines{
+    position:fixed; inset:0; z-index:1; pointer-events:none; opacity:0.35;
+    background:repeating-linear-gradient(0deg, rgba(255,255,255,0.04) 0px, rgba(255,255,255,0.04) 1px, transparent 1px, transparent 3px);
+  }
+  .vignette{ position:fixed; inset:0; z-index:1; pointer-events:none; box-shadow:inset 0 0 220px rgba(0,0,0,0.75); }
 
-  .glow{
-    position:fixed; top:-20%; left:50%; width:900px; height:900px; transform:translateX(-50%);
-    background:radial-gradient(circle, rgba(124,108,255,0.16), transparent 60%);
-    pointer-events:none; z-index:0;
-  }
+  .wrap{ position:relative; z-index:2; width:100%; max-width:960px; padding:64px 24px 60px; text-align:center; }
 
-  /* ---------- HEADER ---------- */
-  .chat-header{
-    position:sticky; top:0; z-index:50;
-    background:rgba(11,12,16,0.82); backdrop-filter:blur(14px);
-    border-bottom:1px solid var(--line);
-  }
-  .chat-header .inner{
-    max-width:720px; margin:0 auto; padding:16px 24px;
-    display:flex; align-items:center; gap:14px;
-  }
-  .avatar{
-    width:42px; height:42px; border-radius:50%; flex-shrink:0;
-    background:linear-gradient(135deg, var(--violet), var(--blue));
-    display:flex; align-items:center; justify-content:center;
-    font-weight:700; font-size:1rem; color:#fff;
-    box-shadow:0 0 24px -4px rgba(124,108,255,0.6);
-  }
-  .h-name{ font-weight:600; font-size:0.98rem; }
-  .h-status{
-    font-size:0.78rem; color:var(--text-soft); display:flex; align-items:center; gap:6px; margin-top:2px;
-  }
-  .h-status .dot{ width:6px; height:6px; border-radius:50%; background:var(--green); animation:pulse 1.8s ease-in-out infinite; }
-  @keyframes pulse{ 0%,100%{opacity:1;} 50%{opacity:0.3;} }
-  .h-cta{
-    margin-left:auto; font-family:'IBM Plex Mono', monospace; font-size:0.78rem;
-    border:1px solid var(--line); padding:9px 16px; border-radius:999px; color:var(--text-soft);
-    display:flex; align-items:center; gap:6px; white-space:nowrap;
-  }
-  .h-cta:hover{ color:var(--text); border-color:rgba(255,255,255,0.25); }
+  .kicker{ font-family:'Press Start 2P', monospace; font-size:0.65rem; color:var(--game-a); letter-spacing:0.05em; margin-bottom:18px; }
+  .kicker .blink{ animation:blink 1.1s step-end infinite; }
+  @keyframes blink{ 50%{ opacity:0.15; } }
 
-  /* ---------- THREAD ---------- */
-  .thread{ max-width:720px; margin:0 auto; padding:36px 24px 60px; position:relative; z-index:1; }
-  .date-chip{
-    text-align:center; margin-bottom:28px;
+  h1.marquee{
+    font-size:clamp(2.4rem, 8vw, 4.6rem); line-height:1.05; margin:0 0 18px;
+    background:linear-gradient(90deg, #ff6bd6, #ffd166, #33e6ff, #7c6cff);
+    background-size:300% auto;
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    animation:hue 8s linear infinite;
+    text-shadow:0 0 40px rgba(124,108,255,0.35);
   }
-  .date-chip span{
-    font-family:'IBM Plex Mono', monospace; font-size:0.72rem; color:var(--text-faint);
-    background:var(--panel); border:1px solid var(--line); padding:6px 14px; border-radius:999px;
-  }
+  @media (prefers-reduced-motion: reduce){ h1.marquee{ animation:none; } }
+  @keyframes hue{ to{ background-position:300% center; } }
 
-  .msg{ display:flex; gap:12px; margin-top:22px; align-items:flex-start; }
-  .msg-user{ justify-content:flex-end; }
-  .msg-user .col{ align-items:flex-end; display:flex; flex-direction:column; max-width:78%; }
-  .msg-assistant .col{ align-items:flex-start; display:flex; flex-direction:column; max-width:88%; }
+  .tagline{ font-size:1.05rem; color:var(--ink-soft); max-width:46ch; margin:0 auto 8px; }
+  .tagline2{ font-size:0.85rem; color:rgba(150,145,181,0.7); max-width:44ch; margin:6px auto 46px; }
 
-  .msg .avatar-sm{
-    width:30px; height:30px; border-radius:50%; flex-shrink:0; margin-top:2px;
-    background:linear-gradient(135deg, var(--violet), var(--blue));
-    display:flex; align-items:center; justify-content:center; font-size:0.72rem; font-weight:700; color:#fff;
+  .portal-grid{
+    display:grid; grid-template-columns:1fr 1fr; gap:20px; text-align:left;
   }
+  @media (max-width:640px){ .portal-grid{ grid-template-columns:1fr; } }
 
-  .bubble{
-    border-radius:18px; padding:14px 18px; font-size:0.98rem; line-height:1.55;
+  .portal{
+    position:relative; padding:24px 22px; border-radius:16px;
+    background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.1);
+    overflow:hidden; cursor:pointer; transition:transform .2s ease, border-color .2s ease, background .2s ease;
+    display:flex; flex-direction:column; gap:10px;
   }
-  .msg-user .bubble{
-    background:linear-gradient(135deg, var(--violet), var(--blue)); color:#fff;
-    border-bottom-right-radius:6px;
+  .portal::before{
+    content:''; position:absolute; inset:0; opacity:0; transition:opacity .25s ease; z-index:0;
+    background:radial-gradient(circle at 20% 0%, var(--pa), transparent 60%), radial-gradient(circle at 100% 100%, var(--pb), transparent 55%);
   }
-  .msg-assistant .bubble{
-    background:var(--bubble-a); border:1px solid var(--bubble-a-border);
-    border-bottom-left-radius:6px;
-  }
-  .meta{ font-size:0.68rem; color:var(--text-faint); margin-top:6px; padding:0 4px; }
+  .portal:hover, .portal:focus-visible{ transform:translateY(-4px); border-color:rgba(255,255,255,0.28); background:rgba(255,255,255,0.05); }
+  .portal:hover::before, .portal:focus-visible::before{ opacity:0.22; }
+  .portal > *{ position:relative; z-index:1; }
 
-  .typing-indicator{
-    background:var(--bubble-a); border:1px solid var(--bubble-a-border);
-    border-radius:18px; border-bottom-left-radius:6px;
-    padding:14px 18px; display:inline-flex; gap:5px; align-items:center;
-  }
-  .typing-indicator span{
-    width:6px; height:6px; border-radius:50%; background:var(--text-soft);
-    animation:bounce 1.1s ease-in-out infinite;
-  }
-  .typing-indicator span:nth-child(2){ animation-delay:0.15s; }
-  .typing-indicator span:nth-child(3){ animation-delay:0.3s; }
-  @keyframes bounce{ 0%,60%,100%{ transform:translateY(0); opacity:0.4; } 30%{ transform:translateY(-4px); opacity:1; } }
+  .portal-msg{ --pa:#7c6cff; --pb:#4f8cff; }
+  .portal-os{ --pa:#7c6cff; --pb:#22d3c0; }
+  .portal-game{ --pa:#33e6ff; --pb:#ff3d9a; }
+  .portal-cork{ --pa:#d8453b; --pb:#d99a2b; }
 
-  [data-reveal]{ opacity:0; }
+  .portal-top{ display:flex; align-items:center; justify-content:space-between; }
+  .portal-icon{ font-size:1.6rem; }
+  .portal-tag{ font-family:'Press Start 2P', monospace; font-size:0.52rem; color:var(--pa); border:1px solid var(--pa); padding:4px 8px; border-radius:999px; }
+  .portal h3{ margin:2px 0 0; font-size:1.15rem; }
+  .portal p{ margin:0; font-size:0.85rem; color:var(--ink-soft); }
+  .portal-preview{ height:36px; border-radius:8px; margin-top:4px; display:flex; align-items:center; gap:6px; padding:0 10px; background:rgba(0,0,0,0.3); }
+  .portal-preview span{ width:8px; height:8px; border-radius:50%; background:var(--pa); opacity:0.7; }
+  .portal-preview span:nth-child(2){ background:var(--pb); }
+  .portal-preview .pbar{ flex:1; height:5px; border-radius:3px; background:linear-gradient(90deg, var(--pa), var(--pb)); opacity:0.5; }
 
-  /* ---------- ATTACHMENTS ---------- */
-  .attach-cards{ display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:12px; }
-  @media (max-width:600px){ .attach-cards{ grid-template-columns:1fr; } }
-  .acard{
-    display:block; border-radius:14px; overflow:hidden; border:1px solid var(--bubble-a-border);
-    background:var(--panel); transition:transform .2s ease, border-color .2s ease;
+  .surprise{
+    margin-top:30px; font-family:'Press Start 2P', monospace; font-size:0.65rem;
+    background:none; border:2px solid rgba(255,255,255,0.25); color:var(--ink);
+    padding:12px 20px; border-radius:999px; cursor:pointer;
   }
-  .acard:hover{ transform:translateY(-3px); border-color:rgba(124,108,255,0.5); }
-  .acard .prev{ height:110px; position:relative; display:flex; align-items:center; justify-content:center; }
-  .prev-80s{ background:repeating-linear-gradient(0deg, rgba(0,0,0,0.15) 0 1px, transparent 1px 3px), linear-gradient(160deg, #0c1c12, #163825); }
-  .prev-80s span{ font-family:'IBM Plex Mono', monospace; color:#7cffa0; font-size:0.74rem; text-shadow:0 0 8px rgba(124,255,160,.6); }
-  .prev-quiky{ background:linear-gradient(150deg, #2a2050, #3d2f7a 55%, #5a3a6e); }
-  .prev-quiky .phones{ display:flex; gap:8px; }
-  .prev-quiky .phone{ width:34px; height:60px; border-radius:7px; background:rgba(255,255,255,0.08); border:2px solid rgba(255,255,255,0.35); }
-  .prev-quiky .phone.mid{ transform:translateY(-5px) scale(1.08); background:rgba(255,255,255,0.14); }
-  .acard .abody{ padding:14px 16px; }
-  .acard h4{ font-size:0.92rem; font-weight:600; margin:0 0 4px; }
-  .acard p{ font-size:0.78rem; color:var(--text-soft); margin:0; }
-  .acard .tags{ display:flex; gap:6px; flex-wrap:wrap; margin-top:8px; }
-  .acard .tag{ font-family:'IBM Plex Mono', monospace; font-size:0.62rem; color:var(--text-faint); border:1px solid var(--line); padding:2px 8px; border-radius:999px; }
+  .surprise:hover{ border-color:var(--game-a); color:var(--game-a); }
 
-  .logo-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:12px; }
-  .logo-grid .lbox{ background:#fff; border-radius:12px; padding:14px; display:flex; align-items:center; justify-content:center; aspect-ratio:1; }
-  .logo-grid img{ max-width:100%; max-height:100%; object-fit:contain; }
-  @media (max-width:480px){ .logo-grid{ grid-template-columns:repeat(2,1fr); } }
+  footer{ position:relative; z-index:2; padding:20px; font-family:'Press Start 2P', monospace; font-size:0.55rem; color:rgba(150,145,181,0.6); text-align:center; }
 
-  .img-scroll{
-    display:grid;
-    grid-template-columns:repeat(auto-fill, minmax(84px, 1fr));
-    gap:8px; margin-top:12px; width:100%;
+  .flicker-overlay{
+    position:fixed; inset:0; z-index:500; background:#fff; opacity:0; pointer-events:none;
   }
-  .img-scroll img{
-    width:100%; aspect-ratio:1; object-fit:cover;
-    border-radius:10px; border:1px solid var(--bubble-a-border);
-    display:block;
+  .flicker-overlay.go{ animation:flicker 0.42s steps(2) forwards; pointer-events:auto; }
+  @keyframes flicker{
+    0%{ opacity:0; } 20%{ opacity:0.9; } 35%{ opacity:0.1; } 50%{ opacity:0.85; }
+    70%{ opacity:0; background:#000; } 100%{ opacity:1; background:#000; }
   }
-  @media (max-width:480px){
-    .img-scroll{ grid-template-columns:repeat(auto-fill, minmax(72px, 1fr)); }
-  }
-
-  .chip-row{ display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
-  .chip{
-    font-family:'IBM Plex Mono', monospace; font-size:0.78rem;
-    border:1px solid var(--line); padding:8px 14px; border-radius:999px; color:var(--text-soft);
-    transition:background .18s ease, color .18s ease, border-color .18s ease, transform .18s ease;
-  }
-  .chip:hover{ background:var(--text); color:var(--bg); border-color:var(--text); transform:translateY(-2px); }
-  .chip.accent{ background:linear-gradient(135deg, var(--violet), var(--blue)); color:#fff; border:none; }
-  .chip.accent:hover{ transform:translateY(-2px); opacity:0.92; background:linear-gradient(135deg, var(--violet), var(--blue)); color:#fff; }
-
-  /* ---------- COMPOSER ---------- */
-  .composer-wrap{
-    position:sticky; bottom:0; z-index:40;
-    background:linear-gradient(to top, var(--bg) 60%, transparent);
-    padding:18px 24px 22px;
-  }
-  .composer{
-    max-width:672px; margin:0 auto;
-    display:flex; align-items:center; gap:10px;
-    background:var(--panel); border:1px solid var(--line);
-    border-radius:999px; padding:8px 8px 8px 20px;
-  }
-  .composer input{
-    flex:1; background:none; border:none; outline:none; color:var(--text);
-    font-family:'Inter', sans-serif; font-size:0.94rem;
-  }
-  .composer input::placeholder{ color:var(--text-faint); }
-  .composer button{
-    width:38px; height:38px; border-radius:50%; border:none; flex-shrink:0;
-    background:linear-gradient(135deg, var(--violet), var(--blue)); color:#fff;
-    display:flex; align-items:center; justify-content:center; font-size:1rem;
-  }
-  .composer-hint{ text-align:center; font-size:0.7rem; color:var(--text-faint); margin-top:10px; font-family:'IBM Plex Mono', monospace; }
 </style>
 </head>
 <body>
 
-<div class="glow" aria-hidden="true"></div>
-<div class="cursor-dot" id="cursorDot"></div>
-<div class="cursor-ring" id="cursorRing"></div>
+<div class="scanlines" aria-hidden="true"></div>
+<div class="vignette" aria-hidden="true"></div>
+<div class="flicker-overlay" id="flicker"></div>
 
-<header class="chat-header">
-  <div class="inner">
-    <div class="avatar">M</div>
-    <div>
-      <div class="h-name">Manjil Aryal</div>
-      <div class="h-status"><span class="dot"></span> I use AI — online</div>
-    </div>
-    <a class="h-cta" href="mailto:manjilaryal11@gmail.com">✎ New message</a>
-  </div>
-</header>
+<div class="wrap">
+  <div class="kicker">◆ MANJIL ARYAL <span class="blink">_</span> ◆ FOUR BUILDS. ONE BUILDER.</div>
+  <h1 class="marquee">SELECT YOUR<br>EXPERIENCE</h1>
+  <p class="tagline">I use AI to design, build, and ship things.</p>
+  <p class="tagline2">I don't know what I'm capable of yet — ask me, and maybe I'll be able to help.</p>
 
-<main class="thread" id="thread">
-  <div class="date-chip"><span>Today</span></div>
+  <div class="portal-grid">
+    <a class="portal portal-msg" href="msg.html" data-portal>
+      <div class="portal-top"><span class="portal-icon">💬</span><span class="portal-tag">CHAT MODE</span></div>
+      <h3>Ask Me Anything</h3>
+      <p>The portfolio as a live conversation — typing indicators, real replies, a working message box.</p>
+      <div class="portal-preview"><span></span><span></span><div class="pbar"></div></div>
+    </a>
 
-  <div class="msg msg-user" data-reveal data-anim="user">
-    <div class="col">
-      <div class="bubble">hey — what do you actually do?</div>
-      <div class="meta mono">9:41 AM</div>
-    </div>
-  </div>
+    <a class="portal portal-os" href="os.html" data-portal>
+      <div class="portal-top"><span class="portal-icon">🖥️</span><span class="portal-tag">DESKTOP MODE</span></div>
+      <h3>My Desktop</h3>
+      <p>A whole operating system — draggable windows, a dock, a menu bar. Open what you want.</p>
+      <div class="portal-preview"><span></span><span></span><div class="pbar"></div></div>
+    </a>
 
-  <div class="msg msg-assistant" data-assistant data-typewriter>
-    <div class="avatar-sm">M</div>
-    <div class="col">
-      <div class="typing-indicator" data-typing><span></span><span></span><span></span></div>
-      <div class="bubble" data-reveal data-content>I use AI to design, build, and ship things.</div>
-      <div class="meta mono" data-reveal data-meta>9:41 AM</div>
-    </div>
-  </div>
+    <a class="portal portal-game" href="game.html" data-portal>
+      <div class="portal-top"><span class="portal-icon">🎮</span><span class="portal-tag">QUEST MODE</span></div>
+      <h3>Character Sheet</h3>
+      <p>Level up as you scroll — dialogue boxes, a skill tree, legendary quest cards, an inventory.</p>
+      <div class="portal-preview"><span></span><span></span><div class="pbar"></div></div>
+    </a>
 
-  <div class="msg msg-user" data-reveal data-anim="user">
-    <div class="col">
-      <div class="bubble">nice — show me something you've built</div>
-      <div class="meta mono">9:42 AM</div>
-    </div>
-  </div>
-
-  <div class="msg msg-assistant" data-assistant>
-    <div class="avatar-sm">M</div>
-    <div class="col">
-      <div class="typing-indicator" data-typing><span></span><span></span><span></span></div>
-      <div class="bubble" data-reveal data-content>
-        Here are the two I'm most proud of right now:
-        <div class="attach-cards">
-          <a class="acard" href="https://80snet.vercel.app/" target="_blank" rel="noopener">
-            <div class="prev prev-80s"><span class="mono">&gt; search: 1985_</span></div>
-            <div class="abody">
-              <h4>80sNet</h4>
-              <p>Retro terminal search engine styled like 1985.</p>
-              <div class="tags"><span class="tag">Claude</span><span class="tag">JS</span></div>
-            </div>
-          </a>
-          <a class="acard" href="https://quiky.vercel.app/" target="_blank" rel="noopener">
-            <div class="prev prev-quiky"><div class="phones"><div class="phone"></div><div class="phone mid"></div><div class="phone"></div></div></div>
-            <div class="abody">
-              <h4>Quiky</h4>
-              <p>Social media mockup generator, no login.</p>
-              <div class="tags"><span class="tag">Claude</span><span class="tag">JS</span></div>
-            </div>
-          </a>
-        </div>
-      </div>
-      <div class="meta mono" data-reveal data-meta>9:42 AM</div>
-    </div>
+    <a class="portal portal-cork" href="corkboard.html" data-portal>
+      <div class="portal-top"><span class="portal-icon">📌</span><span class="portal-tag">CORKBOARD MODE</span></div>
+      <h3>The Corkboard</h3>
+      <p>Everything pinned to a physical wall — Polaroids, sticky notes, tickets. Drag anything.</p>
+      <div class="portal-preview"><span></span><span></span><div class="pbar"></div></div>
+    </a>
   </div>
 
-  <div class="msg msg-user" data-reveal data-anim="user">
-    <div class="col">
-      <div class="bubble">got any logo or brand work too?</div>
-      <div class="meta mono">9:44 AM</div>
-    </div>
-  </div>
-
-  <div class="msg msg-assistant" data-assistant>
-    <div class="avatar-sm">M</div>
-    <div class="col">
-      <div class="typing-indicator" data-typing><span></span><span></span><span></span></div>
-      <div class="bubble" data-reveal data-content>
-        Yeah, a bit of identity work too:
-        <div class="logo-grid">
-          <div class="lbox"><img src="quky.jpg" alt="Quiky logo" loading="lazy"></div>
-          <div class="lbox"><img src="conceptgate.jpg" alt="Conceptgate logo" loading="lazy"></div>
-          <div class="lbox"><img src="botan.jpg" alt="Botan logo" loading="lazy"></div>
-        </div>
-      </div>
-      <div class="meta mono" data-reveal data-meta>9:44 AM</div>
-    </div>
-  </div>
-
-  <div class="msg msg-user" data-reveal data-anim="user">
-    <div class="col">
-      <div class="bubble">what about the generated art?</div>
-      <div class="meta mono">9:45 AM</div>
-    </div>
-  </div>
-
-  <div class="msg msg-assistant" data-assistant>
-    <div class="avatar-sm">M</div>
-    <div class="col">
-      <div class="typing-indicator" data-typing><span></span><span></span><span></span></div>
-      <div class="bubble" data-reveal data-content>
-        A handful of pieces, all made with Gemini — swipe through:
-        <div class="img-scroll">
-          <img src="quiky-1.png" alt="Quiky generated visual" loading="lazy">
-          <img src="allocation.jpg" alt="Allocation generated visual" loading="lazy">
-          <img src="ecnomicsystem.jpg" alt="Economic system generated visual" loading="lazy">
-          <img src="quiky1.jpg" alt="Quiky generated visual" loading="lazy">
-          <img src="quiky2.jpg" alt="Quiky generated visual" loading="lazy">
-          <img src="ppc.jpg" alt="PPC generated visual" loading="lazy">
-          <img src="multistep.jpg" alt="Multistep generated visual" loading="lazy">
-          <img src="multistepsoln.jpg" alt="Multistep solution generated visual" loading="lazy">
-          <img src="it.jpg" alt="IT generated visual" loading="lazy">
-          <img src="eco.jpg" alt="Eco generated visual" loading="lazy">
-          <img src="dflbr.jpg" alt="Dflbr generated visual" loading="lazy">
-        </div>
-      </div>
-      <div class="meta mono" data-reveal data-meta>9:45 AM</div>
-    </div>
-  </div>
-
-  <div class="msg msg-user" data-reveal data-anim="user">
-    <div class="col">
-      <div class="bubble">any smaller web projects I can poke around?</div>
-      <div class="meta mono">9:46 AM</div>
-    </div>
-  </div>
-
-  <div class="msg msg-assistant" data-assistant>
-    <div class="avatar-sm">M</div>
-    <div class="col">
-      <div class="typing-indicator" data-typing><span></span><span></span><span></span></div>
-      <div class="bubble" data-reveal data-content>
-        Plenty — here's the archive:
-        <div class="chip-row">
-          <a class="chip" href="https://manjilaryal546.github.io/collection-of-films/" target="_blank" rel="noopener">FILMs ↗</a>
-          <a class="chip" href="https://manjilaryal.github.io/MQP/" target="_blank" rel="noopener">MCQ ↗</a>
-          <a class="chip" href="https://manjilaryal.github.io/SquidGame/" target="_blank" rel="noopener">Invitation ↗</a>
-          <a class="chip" href="https://manjilaryal.github.io/IMDc/" target="_blank" rel="noopener">IMDc ↗</a>
-          <a class="chip" href="https://manjilaryal.github.io/biralo/" target="_blank" rel="noopener">Biralo ↗</a>
-          <a class="chip" href="https://manjilaryal.github.io/Earn-Money/" target="_blank" rel="noopener">Quiz ↗</a>
-          <a class="chip" href="https://manjilaryal.github.io/Discover-Cats/" target="_blank" rel="noopener">Cats ↗</a>
-        </div>
-      </div>
-      <div class="meta mono" data-reveal data-meta>9:46 AM</div>
-    </div>
-  </div>
-
-  <div class="msg msg-user" data-reveal data-anim="user">
-    <div class="col">
-      <div class="bubble">honestly, not sure what I even need yet</div>
-      <div class="meta mono">9:47 AM</div>
-    </div>
-  </div>
-
-  <div class="msg msg-assistant" data-assistant data-typewriter>
-    <div class="avatar-sm">M</div>
-    <div class="col">
-      <div class="typing-indicator" data-typing><span></span><span></span><span></span></div>
-      <div class="bubble" data-reveal data-content>
-        I don't know what I'm capable of yet either — ask me, and maybe I'll be able to help.
-        <div class="chip-row">
-          <a class="chip accent" href="mailto:manjilaryal11@gmail.com">Let's talk →</a>
-        </div>
-      </div>
-      <div class="meta mono" data-reveal data-meta>9:47 AM</div>
-    </div>
-  </div>
-
-</main>
-
-<div class="composer-wrap">
-  <div class="composer">
-    <input type="text" id="composerInput" placeholder="Message Manjil…" autocomplete="off">
-    <button id="composerSend" aria-label="Send">➤</button>
-  </div>
-  <div class="composer-hint">Press Enter to send — opens your email app</div>
+  <button class="surprise" id="surpriseBtn">🎲 SURPRISE ME</button>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<footer>INSERT COIN TO CONTINUE — BUILT WITH AI IN THE LOOP</footer>
+
 <script>
+  var flicker = document.getElementById('flicker');
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var fineCursor = window.matchMedia('(pointer: fine)').matches && !('ontouchstart' in window);
 
-  /* ---------------- CUSTOM CURSOR ---------------- */
-  if (fineCursor){
-    document.body.classList.add('has-cursor');
-    var dot = document.getElementById('cursorDot');
-    var ring = document.getElementById('cursorRing');
-    if (window.gsap){
-      var mdx = gsap.quickTo(dot, 'x', { duration: 0.05 });
-      var mdy = gsap.quickTo(dot, 'y', { duration: 0.05 });
-      var mrx = gsap.quickTo(ring, 'x', { duration: 0.24, ease: 'power3.out' });
-      var mry = gsap.quickTo(ring, 'y', { duration: 0.24, ease: 'power3.out' });
-      window.addEventListener('mousemove', function(e){ mdx(e.clientX); mdy(e.clientY); mrx(e.clientX); mry(e.clientY); });
-    } else {
-      window.addEventListener('mousemove', function(e){
-        var t = 'translate(' + e.clientX + 'px,' + e.clientY + 'px) translate(-50%,-50%)';
-        dot.style.transform = t; ring.style.transform = t;
-      });
-    }
-    document.querySelectorAll('a, button, input').forEach(function(el){
-      el.addEventListener('mouseenter', function(){ ring.classList.add('hovering'); });
-      el.addEventListener('mouseleave', function(){ ring.classList.remove('hovering'); });
+  function goTo(href){
+    if (reduceMotion){ window.location.href = href; return; }
+    flicker.classList.add('go');
+    setTimeout(function(){ window.location.href = href; }, 380);
+  }
+
+  document.querySelectorAll('[data-portal]').forEach(function(el){
+    el.addEventListener('click', function(e){
+      e.preventDefault();
+      goTo(el.getAttribute('href'));
     });
-  }
+  });
 
-  /* ---------------- REVEAL HELPERS ---------------- */
-  function revealUserMsg(el){
-    if (!window.gsap || reduceMotion){ el.style.opacity = 1; return; }
-    gsap.fromTo(el, { autoAlpha: 0, x: 24 }, { autoAlpha: 1, x: 0, duration: 0.5, ease: 'power3.out' });
-  }
-
-  function revealAssistant(group){
-    var typing = group.querySelector('[data-typing]');
-    var bubble = group.querySelector('[data-content]');
-    var meta = group.querySelector('[data-meta]');
-    var useTypewriter = group.hasAttribute('data-typewriter') && !reduceMotion;
-    var fullText = null;
-
-    if (reduceMotion){
-      typing.style.display = 'none';
-      bubble.style.opacity = 1;
-      meta.style.opacity = 1;
-      return;
-    }
-
-    typing.style.display = 'inline-flex';
-
-    setTimeout(function(){
-      typing.style.display = 'none';
-
-      if (useTypewriter){
-        /* only typewrite the leading text node, keep any nested markup (cards/chips) intact */
-        var firstNode = bubble.childNodes[0];
-        if (firstNode && firstNode.nodeType === 3 && firstNode.textContent.trim().length){
-          fullText = firstNode.textContent;
-          firstNode.textContent = '';
-          bubble.style.opacity = 1;
-          meta.style.opacity = 1;
-          var i = 0;
-          (function type(){
-            i++;
-            firstNode.textContent = fullText.slice(0, i);
-            if (i < fullText.length){ setTimeout(type, 22); }
-          })();
-          return;
-        }
-      }
-
-      if (window.gsap){
-        gsap.fromTo(bubble, { autoAlpha: 0, y: 14 }, { autoAlpha: 1, y: 0, duration: 0.5, ease: 'power3.out' });
-        gsap.to(meta, { autoAlpha: 1, duration: 0.4, delay: 0.15 });
-      } else {
-        bubble.style.opacity = 1; meta.style.opacity = 1;
-      }
-    }, 750 + Math.random() * 350);
-  }
-
-  /* first two message groups (visible above the fold) play immediately */
-  var allMsgs = document.querySelectorAll('.msg');
-  var played = new WeakSet();
-
-  function playMsg(el){
-    if (played.has(el)) return;
-    played.add(el);
-    if (el.classList.contains('msg-user')){ revealUserMsg(el); }
-    else { revealAssistant(el); }
-  }
-
-  if ('IntersectionObserver' in window){
-    var io = new IntersectionObserver(function(entries){
-      entries.forEach(function(entry){
-        if (entry.isIntersecting){ playMsg(entry.target); io.unobserve(entry.target); }
-      });
-    }, { threshold: 0.35, rootMargin: '0px 0px -10% 0px' });
-    allMsgs.forEach(function(el){ io.observe(el); });
-  } else {
-    allMsgs.forEach(playMsg);
-  }
-
-  /* ---------------- COMPOSER ---------------- */
-  var input = document.getElementById('composerInput');
-  var sendBtn = document.getElementById('composerSend');
-
-  function sendMessage(){
-    var val = input.value.trim();
-    if (!val){
-      document.getElementById('thread').scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' });
-      return;
-    }
-    var subject = encodeURIComponent('Project inquiry via portfolio');
-    var body = encodeURIComponent(val);
-    window.location.href = 'mailto:manjilaryal11@gmail.com?subject=' + subject + '&body=' + body;
-    input.value = '';
-  }
-  sendBtn.addEventListener('click', sendMessage);
-  input.addEventListener('keydown', function(e){ if (e.key === 'Enter'){ e.preventDefault(); sendMessage(); } });
+  document.getElementById('surpriseBtn').addEventListener('click', function(){
+    var portals = document.querySelectorAll('[data-portal]');
+    var pick = portals[Math.floor(Math.random() * portals.length)];
+    goTo(pick.getAttribute('href'));
+  });
 </script>
 
 </body>
